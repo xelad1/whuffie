@@ -34,11 +34,11 @@
     "grunt-processhtml": "^0.3.3",
     "grunt-usemin": "^2.1.1",
     "grunt-eslint": "^0.4.0",
-    "grunt-jscs-checker": "^0.4.1",
+    "grunt-jscs": "",
     "load-grunt-config": "^0.9.1",
     "time-grunt": "^0.3.1",
     "ripple-lib": "0.7.37",
-    "ripple-wallet": "3.0.0"
+    "ripple-wallet": ""
   },
   "scripts": {
     "test": "grunt test"
