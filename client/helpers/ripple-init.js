@@ -60,8 +60,8 @@ Meteor.startup(function() {
 		Session.set('myAddr', "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh");
 		Session.set('mySecret', "snoPBrXtMeMyMHUVTgbuqAfg1SUTb");
 	} else {
-		Session.set('myAddr', "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh");
-		Session.set('mySecret', "snoPBrXtMeMyMHUVTgbuqAfg1SUTb");
+		Session.set('myAddr', "ganVp9o5emfzpwrG5QVUXqMv8AgLcdvySb");
+		Session.set('mySecret', "s3q5ZGX2ScQK2rJ4JATp7rND6X5npG3De8jMbB7tuvm2HAVHcCN");
 	}
 
 	Amount = cryptolib.Amount;
@@ -75,8 +75,8 @@ Meteor.startup(function() {
 		max_fee: 150,
 		servers: [
 			{
-				host: "127.0.0.1",
-				port: 5006,
+				host: "10.0.2.15",
+				port: 9001,
 				secure: false
 			}
 		]

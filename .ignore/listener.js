@@ -71,10 +71,12 @@ function insertTxn(t) {
 /* THE GOOD STUFF */
 ////////////////////////////////////////////////////////////
 var network = process.argv[2];
-if (network === 'rippled') {
+if (network === 'local') {
 	var ws = new Websocket('ws://localhost:5006');
 } else if (network === 'stellard') {
 	var ws = new Websocket('ws://live.stellar.org:9001');
+} else {
+	console.log('Incorrect usage');
 }
 
 ws.on('open', function() {
@@ -111,7 +113,6 @@ function STRTransaction(msg) {
 }
 
 /* this connects to rippled and closes the ledger every x seconds */
-/*
 (function(interval) {
 	var Remote = stellar.Remote;
 
@@ -135,8 +136,6 @@ function STRTransaction(msg) {
 
 	);
 })(7000);
-
-*/
 
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////

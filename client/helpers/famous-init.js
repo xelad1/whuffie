@@ -21,7 +21,7 @@ Meteor.startup(function() {
 	// window.RenderController = require('famous/views/RenderController');
 
 	// window.Scrollview = require('famous/views/Scrollview');
-	// window.HeaderFooterLayout = require('famous/views/HeaderFooterLayout');
+	window.HeaderFooterLayout = require('famous/views/HeaderFooterLayout');
 
 	// window.Easing = require('famous/transitions/Easing');
 	// window.Transitionable = require('famous/transitions/Transitionable');

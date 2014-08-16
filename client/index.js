@@ -12,6 +12,12 @@ Template.txn.helpers({
 	}
 });
 
+/*
+Template.txn.created = function() {
+	$(this.firstNode).fadeIn();
+}
+*/
+
 Template.sendSTR.events({
 	'click input#submit-txn': submitSTRTxn
 });
@@ -62,7 +68,7 @@ Template.fav.rendered = function() {
 			'<li>item3</li>' +
 			'<li>item4</li>' +
 			'</ul>',
-		size: [50, undefined],
+		size: [100, 100],
 		properties: {
 			color: 'white',
 			textAlign: 'center',
@@ -71,23 +77,21 @@ Template.fav.rendered = function() {
 		}
 	});
 
-	var sizeModifier = new Modifier({
-		size: [100, 100]
-	});
-
 	var modifier = new Modifier({
 		origin: [0, 0],
-		align: [1, 1],
-		transform: Transform.translate(0, -100, 0)
+		align: [0, 0],
+		// transform: Transform.translate(200, 100, 0)
 	});
 
-	mainContext.add(sizeModifier).add(modifier).add(surface);
+	mainContext.add(modifier).add(surface);
+
+	surface.on('click', function() {
+		surface.setContent('CLICKED')
+	})
 };
 
-Template.fav.helpers({
-	name: function() {
-		return 'handlebars';
-	}
+Template.fav.events({
+
 })
 
 /////////////////////////////////////////////////////////
