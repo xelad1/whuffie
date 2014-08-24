@@ -3,6 +3,12 @@ var stellar = require('stellar-lib');
 var Websocket = require('ws');
 var DDPClient = require('ddp');
 
+var ddpPort = 8080;
+var ddpHost = 'localhost';
+
+var ws;
+var network = process.argv[2];
+
 /*
 NEED TO:
 	1. connect to stellard using websockets
@@ -31,9 +37,9 @@ bonus:
 ////////////////////////////////////////////////////////////
 // when publishing to meteor's site, update this info accordingly
 // since it will have to be run locally
-var ddpPort = 8080;
+
 var ddpclient = new DDPClient({
-	host: 'localhost',
+	host: ddpHost,
 	port: ddpPort,
 	auto_reconnect: true,
 	auto_reconnect_timer: 500,
@@ -70,13 +76,14 @@ function insertTxn(t) {
 ////////////////////////////////////////////////////////////
 /* THE GOOD STUFF */
 ////////////////////////////////////////////////////////////
-var network = process.argv[2];
-if (network === 'rippled') {
-	var ws = new Websocket('ws://localhost:5006');
-} else if (network === 'stellard') {
-	var ws = new Websocket('ws://live.stellar.org:9001');
-}
 
+if (network === 'local') {
+	ws = new Websocket('ws://localhost:5006');
+} else if (network === 'livestellar') {
+	ws = new Websocket('ws://live.stellar.org:9001');
+} else {
+	console.log('use \'local\' or \'livestellar\'')
+}
 ws.on('open', function() {
 	console.log('Connecting to the ' + network + ' server using ws...');
 	
@@ -124,7 +131,6 @@ function STRTransaction(msg) {
 	});
 
 	remote.connect(
-	// var closeLedger = remote.ledger_accept;
 
 	// close the ledger every 10 seconds:
 		setInterval(function() {
