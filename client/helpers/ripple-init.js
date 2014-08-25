@@ -49,65 +49,106 @@ function signtx(secret, tx_in) {
 Meteor.startup(function() {
 
 	if (typeof stellar !== 'undefined') {
-		cryptolib = stellar;
 		lib_name = 'Stellar';
-	} else {
-		cryptolib = ripple;
-		lib_name = 'Ripple';
 	}
 
-	if (lib_name == "Ripple") {
-		Session.set('myAddr', "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh");
-		Session.set('mySecret', "snoPBrXtMeMyMHUVTgbuqAfg1SUTb");
-	} else {
-		Session.set('myAddr', "ganVp9o5emfzpwrG5QVUXqMv8AgLcdvySb");
-		Session.set('mySecret', "s3q5ZGX2ScQK2rJ4JATp7rND6X5npG3De8jMbB7tuvm2HAVHcCN");
-	}
+	Session.set('myAddr', "ganVp9o5emfzpwrG5QVUXqMv8AgLcdvySb");
+	Session.set('mySecret', "s3q5ZGX2ScQK2rJ4JATp7rND6X5npG3De8jMbB7tuvm2HAVHcCN");
 
-	Amount = cryptolib.Amount;
-	Remote = cryptolib.Remote;
+	Amount = stellar.Amount;
+	Remote = stellar.Remote;
+	utils = stellar.utils;
 
 	remote = new Remote({
 		trusted: false,
 		local_signing: true,
 		local_fee: true,
-		fee_cushion: 15,
-		max_fee: 150,
+		fee_cushion: 1.5,
+		// max_fee: 15,
 		servers: [
 			{
-				host: "10.0.2.15",
-				port: 9001,
+				host: "127.0.0.1",
+				port: 6006,   // admin websockets
 				secure: false
 			}
 		]
 	});
-
-	remote.connect(function (err) {
-		console.log('Connecting to stellard...');
-		remote.set_secret(Session.get('myAddr'), Session.get('mySecret'));
-	});
+	// set remote addr and secret on startup, then connect
+	remote.set_secret(Session.get('myAddr'), Session.get('mySecret'));
 
 });
 
+function Memo(type, data) {
+	// tx.Memos = [ { Memo: { MemoType: type, MemoData: data } } ]
 
+	this.MemoType = utils.stringToHex(type);
+	this.MemoData = utils.stringToHex(data);
+}
 
-	/* 	SOME FUNCTIONS TO REMEMBER
+str500 = '######################################################################################################################################################################################################################### this string is exactly 500 characters long ###############################################################################################################################################################################################################################################';
+str400 = '####################################################################################################################################################################### this string is exactly 400 characters long #############################################################################################################################################################################################';
 
-	request_server_info(callback)
-		can tell you the reserve costs
-		they should be in the response obj
-
-	request_account_info(addr, callback)
-		tells you an xrp balance
-
-	since you can't return anything out of a callback, you'll have to call a second function within the callback to do the stuff to the value you would have otherwise returned
-
-
-	*/
-
+submitTxn = function(amt, memoType, memoData) {
 	/*
-	# testing the share function
-	tx_blob = sign_share_tx(rootSec, rootAddr, "r3kmLJN5D28dHuH8vZNUZpMC43pEHpaocV", 100)
-	console.log(tx_blob)
-	# share_submit_request = remote.request_submit(tx_blob)
-	*/
+		step 1: declare our vars of addrs and amts
+		step 2: w/in remote.connect, create txn and fill out and submit txn
+		step 3: w/in tx.submit, if res, remote.disconnect()
+	 */
+	var rcvrAddr = 'gM4Fpv2QuHY4knJsQyYGKEHFGw3eMBwc1U';
+	amt = Amount.from_human(amt + 'STR');
+
+	//
+	remote.connect(function() {
+
+		var tx = remote.transaction();
+
+		tx.payment({
+			from: Session.get('myAddr'),
+			to: rcvrAddr,
+			amount: amt
+		});
+
+		var memoObj = new Memo(memoType, memoData);
+		tx.tx_json.Memos = [ { Memos: memoObj } ];
+
+		console.log('sending the txn...');
+
+		tx.submit(function (err, res) {
+			if (err) {
+				console.log('error: ' + err.result_message);
+			}
+			else if (res) {
+				console.log('successful txn submission!');
+
+				remote.disconnect();
+			}
+		});
+	});
+};
+
+
+
+
+
+/* 	SOME FUNCTIONS TO REMEMBER
+
+request_server_info(callback)
+	can tell you the reserve costs
+	they should be in the response obj
+
+request_account_info(addr, callback)
+	tells you an xrp balance
+
+since you can't return anything out of a callback,
+	you'll have to call a second function within the callback   to do the stuff to the value you would have otherwise returned
+
+*/
+
+/*
+
+# testing the share function
+tx_blob = sign_share_tx(rootSec, rootAddr, "r3kmLJN5D28dHuH8vZNUZpMC43pEHpaocV", 100)
+console.log(tx_blob)
+# share_submit_request = remote.request_submit(tx_blob)
+
+*/

@@ -57,6 +57,8 @@ submitSTRTxn = function(event, template) {
 			input_rcvr.value = '';
 			input_amt.value = '';
 			btn.button('complete');
+
+			// should switch the button back after txn confirmation
 			Meteor.setTimeout(function() {
 				btn.button('original');
 			}, 5000);

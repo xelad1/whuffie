@@ -3,6 +3,8 @@ var stellar = require('stellar-lib');
 var Websocket = require('ws');
 var DDPClient = require('ddp');
 
+var ddpPort = 8080;
+
 /*
 NEED TO:
 	1. connect to stellard using websockets
@@ -31,7 +33,7 @@ bonus:
 ////////////////////////////////////////////////////////////
 // when publishing to meteor's site, update this info accordingly
 // since it will have to be run locally
-var ddpPort = 8080;
+
 var ddpclient = new DDPClient({
 	host: 'localhost',
 	port: ddpPort,
@@ -70,17 +72,18 @@ function insertTxn(t) {
 ////////////////////////////////////////////////////////////
 /* THE GOOD STUFF */
 ////////////////////////////////////////////////////////////
-var network = process.argv[2];
-if (network === 'local') {
-	var ws = new Websocket('ws://localhost:5006');
-} else if (network === 'stellard') {
-	var ws = new Websocket('ws://live.stellar.org:9001');
+var network_name = process.argv[2];
+var ws;
+if (network_name === 'local') {
+	ws = new Websocket('ws://localhost:5006');  // untrusted access
+} else if (network_name === 'livestellar') {
+	ws = new Websocket('ws://live.stellar.org:9001');
 } else {
 	console.log('Incorrect usage');
 }
 
 ws.on('open', function() {
-	console.log('Connecting to the ' + network + ' server using ws...');
+	console.log('Connecting to the ' + network_name + ' server using ws...');
 	
 	// subscribes us to ledger close events
 	// ws.send('{"command": "subscribe", "id": 0, "streams": ["ledger"]}');
@@ -100,6 +103,9 @@ ws.on('message', function(message) {
 	}
 });
 
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+
 /* class for relevant XRP transaction data */
 function STRTransaction(msg) {
 	// msg = JSON.parse(msg);
@@ -112,6 +118,12 @@ function STRTransaction(msg) {
 	}
 }
 
+/*
+function Memo() {}
+*/
+
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
 /* this connects to rippled and closes the ledger every x seconds */
 (function(interval) {
 	var Remote = stellar.Remote;
@@ -125,11 +137,9 @@ function STRTransaction(msg) {
 	});
 
 	remote.connect(
-	// var closeLedger = remote.ledger_accept;
 
 	// close the ledger every 10 seconds:
 		setInterval(function() {
-
 			remote.ledger_accept();
 			console.log('\n## Closing ledger... ##');
 		}, interval)
