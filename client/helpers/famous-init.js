@@ -1,9 +1,10 @@
 Meteor.startup(function() {
 	// Add polyfills.
 	// require("famous-polyfills");
+	famous.polyfills;
 
 	// Add the default CSS file.
-	// require("famous/core/famous");
+	require("famous/core/famous");
 
 	// Add everything to window for simplicity's sake.
 	window.Engine = require('famous/core/Engine');
@@ -22,11 +23,13 @@ Meteor.startup(function() {
 
 	// window.Scrollview = require('famous/views/Scrollview');
 	window.HeaderFooterLayout = require('famous/views/HeaderFooterLayout');
+	window.GridLayout = require("famous/views/GridLayout");
 
 	// window.Easing = require('famous/transitions/Easing');
 	// window.Transitionable = require('famous/transitions/Transitionable');
 	// window.SnapTransition = require('famous/transitions/SnapTransition');
 	// window.SpringTransition = require('famous/transitions/SpringTransition');
+
 
 	// Initialize two basic transitions.
 	// Transitionable.registerMethod('snap', SnapTransition);
