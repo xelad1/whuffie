@@ -1,13 +1,6 @@
 Meteor.startup(function() {
-	// require("famous-polyfills"); // Add polyfills
-	// require("famous/core/famous"); // Add the default css file
-
-	/*
-	var Engine = require('famous/core/Engine');
-	var Surface = require('famous/core/Surface');
-	var HeaderFooterLayout = require("famous/views/HeaderFooterLayout");
-	var GridLayout = require("famous/views/GridLayout");
-	*/
+	// this is the main page that loads at '/'
+	// for now, it is a simple headerfooter layout with grids in the content and footer
 
 	var mainContext = Engine.createContext();
 
@@ -34,7 +27,7 @@ Meteor.startup(function() {
 			properties: {
 				lineHeight: "110px",
 				textAlign: "center",
-				color: "white",
+				color: "white"
 			}
 		}));
 	}

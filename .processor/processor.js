@@ -32,9 +32,9 @@ bonus:
 /*	DDP INITIALIZATION STUFF	*/
 ////////////////////////////////////////////////////////////
 // when publishing to meteor's site, update this info accordingly
-// since it will have to be run locally
+// since this run locally but our meteor server won't
 
-var ddpclient = new DDPClient({
+var ddpClient = new DDPClient({
 	host: 'localhost',
 	port: ddpPort,
 	auto_reconnect: true,
@@ -43,24 +43,24 @@ var ddpclient = new DDPClient({
 	maintain_collections: false
 });
 
-ddpclient.connect(function(err) {
+ddpClient.connect(function(err) {
 	if (err) {
 		console.log('There\'s been an error connecting to the Meteor server...');
-		return
+		return;
 	}
 	console.log('Connecting to the Meteor server on port ' + ddpPort + '...');
 });
 
 // define the ddp call to the server
-function insertTxn(t) {
-	ddpclient.call(
+function insertTxn(txn) {
+	ddpClient.call(
 		'addTxn',
-		[t],
+		[txn],
 		function(err, result) {
 			if (err) {
 				console.log('There was an error calling addTxn: ' + err);
 			} else {
-				console.log('Successfully called addTxn.');
+				console.log('Successfully called and returned from addTxn: ' + result);
 			}
 		},
 		function() {
@@ -94,7 +94,7 @@ ws.on('open', function() {
 
 ws.on('message', function(message) {
 	
-	msg_json = JSON.parse(message)
+	var msg_json = JSON.parse(message);
 	
 	if (msg_json.hasOwnProperty('engine_result')) {
 		var txn = new STRTransaction(msg_json);
@@ -124,28 +124,30 @@ function Memo() {}
 
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
-/* this connects to rippled and closes the ledger every x seconds */
-(function(interval) {
-	var Remote = stellar.Remote;
+/* this connects to a local stellard and closes the ledger every x seconds */
+if (network_name === 'local') {
+	(function (interval) {
+		var Remote = stellar.Remote;
 
-	var remote = new Remote({
-		servers: [{
-			host: "127.0.0.1",
-			port: 6006,	// admin access
-			secure: false
-		}]
-	});
+		var remote = new Remote({
+			servers: [
+				{
+					host: "127.0.0.1",
+					port: 6006,	// admin access
+					secure: false
+				}
+			]
+		});
 
-	remote.connect(
-
-	// close the ledger every 10 seconds:
-		setInterval(function() {
-			remote.ledger_accept();
-			console.log('\n## Closing ledger... ##');
-		}, interval)
-
-	);
-})(7000);
+		remote.connect(
+			// close the ledger every 10 seconds:
+			setInterval(function () {
+				remote.ledger_accept();
+				console.log('\n## Closing ledger... ##');
+			}, interval)
+		);
+	})(7000);
+}
 
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////

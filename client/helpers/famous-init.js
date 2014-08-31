@@ -1,7 +1,7 @@
 Meteor.startup(function() {
 	// Add polyfills.
 	// require("famous-polyfills");
-	famous.polyfills;
+	famous.polyfills;     // why does this work?
 
 	// Add the default CSS file.
 	require("famous/core/famous");
