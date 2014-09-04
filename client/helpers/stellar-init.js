@@ -1,3 +1,4 @@
+
 /*
 
     rootAddr = "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh"; 
@@ -47,7 +48,7 @@ function signtx(secret, tx_in) {
 */
 
 Meteor.startup(function() {
-	//
+	// sets the root acct info, establishes and sets the remote obj
 
 	if (typeof stellar !== 'undefined') {
 		lib_name = 'Stellar';
@@ -74,23 +75,27 @@ Meteor.startup(function() {
 			}
 		]
 	});
-	// set remote addr and secret on startup, then connect
+
+	// set remote addr and secret on startup
 	remote.set_secret(Session.get('myAddr'), Session.get('mySecret'));
 
 });
 
-function Memo(type, data) {
+Memo = function(type, data) {
 	// tx.Memos = [ { Memo: { MemoType: type, MemoData: data } } ]
 
 	this.MemoType = utils.stringToHex(type);
 	this.MemoData = utils.stringToHex(data);
-}
+};
 
+// fixed length strings
+/*
 str500 = '######################################################################################################################################################################################################################### this string is exactly 500 characters long ###############################################################################################################################################################################################################################################';
 str400 = '####################################################################################################################################################################### this string is exactly 400 characters long #############################################################################################################################################################################################';
+*/
 
-submitTx = function(amt, memoType, memoData) {
-	//
+submitTxn = function(amt, memoType, memoData) {
+	// this is a base func that sends STR with memo data
 
 	/*
 		step 1: declare our vars of addrs and amts
@@ -112,7 +117,8 @@ submitTx = function(amt, memoType, memoData) {
 		});
 
 		var memoObj = new Memo(memoType, memoData);
-		tx.tx_json.Memos = [ { Memos: memoObj } ];
+		// the memo obj must have field 'Memo'
+		tx.tx_json.Memos = [ { Memo: memoObj } ];
 
 		console.log('sending the txn...');
 

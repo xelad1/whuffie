@@ -25,7 +25,7 @@ ageString = function() {
 },
 
 submitSTRTxn = function(event, template) {
-	// TODO: refactor this as a closure for both xrp and wfi txns
+	// TODO: refactor this as a closure for both str and wfi txns
 
 	event.preventDefault();
 	var btn = $('#submit-txn');
@@ -37,7 +37,7 @@ submitSTRTxn = function(event, template) {
 	var amt = input_amt.value;
 
 	// console.log(rcvrAddr, amt);
-	amt = Amount.from_human(amt + 'XRP');
+	amt = Amount.from_human(amt + 'STR');
 
 	var tx = remote.transaction();
 

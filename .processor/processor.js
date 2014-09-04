@@ -2,6 +2,7 @@
 var stellar = require('stellar-lib');
 var Websocket = require('ws');
 var DDPClient = require('ddp');
+var classes = require('./classes');
 
 var ddpPort = 8080;
 
@@ -56,13 +57,18 @@ function insertTxn(txn) {
 	ddpClient.call(
 		'addTxn',
 		[txn],
+
+		// returns the method call results
 		function(err, result) {
 			if (err) {
 				console.log('There was an error calling addTxn: ' + err);
 			} else {
+				// result returns undefined
 				console.log('Successfully called and returned from addTxn: ' + result);
 			}
 		},
+
+		// fires when the server is finished with the called method
 		function() {
 			console.log('Updated DB successfully!');
 		}
@@ -92,38 +98,44 @@ ws.on('open', function() {
 	ws.send('{"command": "subscribe", "streams": ["transactions"]}');
 });
 
-ws.on('message', function(message) {
+ws.on('message', function(msg) {
 	
-	var msg_json = JSON.parse(message);
-	
-	if (msg_json.hasOwnProperty('engine_result')) {
-		var txn = new STRTransaction(msg_json);
-		// console.log(msg_json);
-		insertTxn(txn);
+	var msg_json = JSON.parse(msg);
+	// console.log(msg_json);
+
+	if (
+		msg_json.hasOwnProperty('transaction') &&
+		msg_json.status === 'closed' &&
+		msg_json.engine_result === 'tesSUCCESS'
+	) {
+
+		// var memoObj = new classes.Memo(msg_json.transaction.Memos[0].Memo);
+		// ergo, we should store a msg_type at the root of the memoObj for fast if/else reference
+		//
+
+		/////////////////////////////
+		// if this is a plain STR txn (this will go away later)
+		if (msg_json.transaction.TransactionType === 'Payment') {
+			var txn = new classes.STRTransaction(msg_json);
+			insertTxn(txn);
+		}
+
+		/////////////////////////////
+		// if this is a identity store
+
+		/////////////////////////////
+		// if this is a identity update
+
+		/////////////////////////////
+
+
 	}
+
 });
 
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
 
-/* class for relevant XRP transaction data */
-function STRTransaction(msg) {
-	// msg = JSON.parse(msg);
-	if (msg.engine_result == 'tesSUCCESS' && msg.transaction.TransactionType == 'Payment') {
-		this.sender = msg.transaction.Account;
-		this.reciever = msg.transaction.Destination;
-		this.amount = msg.transaction.Amount;
-		this.ledger = msg.ledger_index;
-		this.date = msg.transaction.date;
-	}
-}
-
-/*
-function Memo() {}
-*/
-
-/////////////////////////////////////////////////////
-/////////////////////////////////////////////////////
 /* this connects to a local stellard and closes the ledger every x seconds */
 if (network_name === 'local') {
 	(function (interval) {

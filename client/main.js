@@ -50,7 +50,11 @@ Meteor.startup(function() {
 
 		for(var i = 0; i < dimensions[0]; i++) {
 			surfaces.push(new Surface({
-				content: section + ' ' + (i + 1),
+
+				// try rendering with a template using raix's library
+				template: Template.practice,
+				// content: section + ' ' + (i + 1),
+
 				size: [undefined, undefined],
 				properties: {
 					backgroundColor: "hsl(" + (i * 360 / 8) + ", 100%, 50%)",

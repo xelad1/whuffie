@@ -2,6 +2,7 @@ Meteor.startup(function() {
 	// Add polyfills.
 	// require("famous-polyfills");
 	famous.polyfills;     // why does this work?
+	famous.core.famous;   // what do these two lines actually do?
 
 	// Add the default CSS file.
 	require("famous/core/famous");
@@ -10,7 +11,11 @@ Meteor.startup(function() {
 	window.Engine = require('famous/core/Engine');
 
 	window.View = require('famous/core/View');
-	window.Surface = require('famous/core/Surface');
+
+	// going to try rendering with raix's special surface
+	window.Surface = require('library/meteor/core/Surface');
+	// window.Surface = require('famous/core/Surface');
+
 	window.Modifier = require('famous/core/Modifier');
 	window.Transform = require('famous/core/Transform');
 	// window.Deck = require('famous/views/Deck');
