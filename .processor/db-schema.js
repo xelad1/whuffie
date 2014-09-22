@@ -1,5 +1,5 @@
 /*
-this should hold our DB classes for objs pulled from the ledger
+this should hold our classes for objs pulled from the ledger
 from our responses from the ledger, we will create appropriate objs containing:
 	txn information
 	anything necessary to displaying the post
@@ -11,14 +11,13 @@ from our responses from the ledger, we will create appropriate objs containing:
 var stellar = require('stellar-lib');
 var utils = stellar.utils;
 
-
-function STRTransaction(msg) {
+function BasicSTRTransaction(msg) {
 	// this is a basic class for storing simple STRTransactions
 	// the main changes you'll see will be additions to the Memo obj of the Memos array
 
-	var day_zero = 946684800;
+  var day_zero = 946684800;
 
-	this.type = 'STRTransaction';
+	this.type = 'BasicSTRTransaction';
 
 	this._id = msg.transaction.hash;
 	this.sender = msg.transaction.Account;
@@ -45,7 +44,7 @@ function Memo(memo) {
 
 
 
-exports.STRTransaction = STRTransaction;
+exports.BasicSTRTransaction = BasicSTRTransaction;
 
 
 ////////////////////////////////////////////

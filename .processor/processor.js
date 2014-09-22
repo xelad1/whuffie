@@ -2,8 +2,11 @@
 var stellar = require('stellar-lib');
 var Websocket = require('ws');
 var DDPClient = require('ddp');
-var classes = require('./classes');
+// var login = require('ddp-login');  // https://github.com/vsivsi/ddp-login
 
+var classes = require('./db-schema');   // imports our unique txn classes
+
+var ddpHost = 'localhost';
 var ddpPort = 8080;
 
 /*
@@ -36,7 +39,23 @@ bonus:
 // since this run locally but our meteor server won't
 
 var ddpClient = new DDPClient({
-	host: 'localhost',
+	// production notes:
+	/*
+
+	// logging in with username (NOTE: use ddp-login)
+	  ddpclient.call(
+	    "login",
+	    [{
+	      user : { username : "username" },
+	      password : "password"
+	    }],
+	    function (err, result) { ... }
+	  );
+
+	//
+
+	*/
+	host: ddpHost,
 	port: ddpPort,
 	auto_reconnect: true,
 	auto_reconnect_timer: 500,
@@ -82,11 +101,16 @@ var network_name = process.argv[2];
 var ws;
 if (network_name === 'local') {
 	ws = new Websocket('ws://localhost:5006');  // untrusted access
-} else if (network_name === 'livestellar') {
+} else if (network_name === 'live-stellar') {
+	// SSL?
 	ws = new Websocket('ws://live.stellar.org:9001');
+} else if (network_name === 'test-stellar') {
+  // SSL?
+	ws = new Websocket('ws://test.stellar.org:9001')
 } else {
-	console.log('Incorrect usage');
+		console.log('Incorrect usage')
 }
+
 
 ws.on('open', function() {
 	console.log('Connecting to the ' + network_name + ' server using ws...');
@@ -114,9 +138,9 @@ ws.on('message', function(msg) {
 		//
 
 		/////////////////////////////
-		// if this is a plain STR txn (this will go away later)
+		// if this is a basic STR txn (this will go away later)
 		if (msg_json.transaction.TransactionType === 'Payment') {
-			var txn = new classes.STRTransaction(msg_json);
+			var txn = new classes.BasicSTRTransaction(msg_json);
 			insertTxn(txn);
 		}
 
@@ -136,7 +160,8 @@ ws.on('message', function(msg) {
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
 
-/* this connects to a local stellard and closes the ledger every x seconds */
+// closes the local stellard ledger every `timeout` ms
+var timeout = 7000;
 if (network_name === 'local') {
 	(function (interval) {
 		var Remote = stellar.Remote;
@@ -158,7 +183,7 @@ if (network_name === 'local') {
 				console.log('\n## Closing ledger... ##');
 			}, interval)
 		);
-	})(7000);
+	})(timeout);
 }
 
 /////////////////////////////////////////////////////
