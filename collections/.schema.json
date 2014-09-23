@@ -1,0 +1,68 @@
+// DB SCHEMAS
+
+// ** keys are mongodb only
+
+user_schema = {
+
+	"basics": {
+		"bio": "Co-founder AngelList \\u2022 Founder Epinions, Vast \\u2022 Author Startupboy, Venture Hacks \\u2022 Investor Twitter, Uber, Yammer, Postmates",
+		"firstName": "Naval",
+		"lastName": "Ravikant",
+		"location": "San Francisco, CA"
+	},
+
+	"payments": [
+		{
+			"type": "stellar",
+			"address": "ganVp9o5emfzpwrG5QVUXqMv8AgLcdvySb",
+			"** proof": "TXHASH that declares username and has min STR spent/burned"
+		}
+	],
+
+	"profiles": [
+		{
+			"type": "twitter",
+			"username": "naval",
+			"proof": "url",
+			"profile-page": "url"
+		}, {
+      "type": "facebook",
+      "username?": "naval",
+      "proof": "url",
+      "profile-page": "url"
+    }
+	],
+
+	"photos": [
+		{
+			"type": "avatar",
+			"url": "https://pbs.twimg.com/profile_images/3696617328/667874c5936764d93d56ccc76a2bcc13.jpeg"
+		},
+		{
+			"type": "cover",
+			"url": "https://pbs.twimg.com/profile_banners/745273/1355705777/web_retina"
+		}
+	],
+
+	"websites": [
+		{"url": "https://angel.co/naval"}
+	],
+
+	"misc": [
+		{
+			"wufi-invites": [
+				// needs to include TXHASH of any spent invites,
+					// to count as an invite, you have to have a certain balance at time of spending
+				// number of spent invites * base_invite_reserve can never be more than your current balance (to prevent spamming)
+			]
+		}
+	]
+
+	"** openspecs_version": "0.3",
+	"** wufi_user_version": "0.1"
+
+};
+
+post_schema = {};
+
+// MEMO SCHEMAS

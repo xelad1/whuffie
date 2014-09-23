@@ -24,8 +24,8 @@ ageString = function() {
 	}
 },
 
-submitSTRTxn = function(event, template) {
-	// TODO: refactor this as a closure for both xrp and wfi txns
+submitSTRTxnFromForm = function(event, template) {
+	// TODO: refactor this as a closure for both str and wfi txns
 
 	event.preventDefault();
 	var btn = $('#submit-txn');
@@ -37,7 +37,7 @@ submitSTRTxn = function(event, template) {
 	var amt = input_amt.value;
 
 	// console.log(rcvrAddr, amt);
-	amt = Amount.from_human(amt + 'XRP');
+	amt = Amount.from_human(amt + 'STR');
 
 	var tx = remote.transaction();
 
@@ -57,6 +57,8 @@ submitSTRTxn = function(event, template) {
 			input_rcvr.value = '';
 			input_amt.value = '';
 			btn.button('complete');
+
+			// should switch the button back after txn confirmation
 			Meteor.setTimeout(function() {
 				btn.button('original');
 			}, 5000);
@@ -77,4 +79,4 @@ updateConfig = function(event, template) {
 
 	input_addr.value = '';
 	input_key.value = '';
-}
+};

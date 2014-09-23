@@ -12,6 +12,12 @@ Template.txn.helpers({
 	}
 });
 
+/*
+Template.txn.created = function() {
+	$(this.firstNode).fadeIn();
+}
+*/
+
 Template.sendSTR.events({
 	'click input#submit-txn': submitSTRTxn
 });
@@ -32,7 +38,7 @@ Template.config.events({
 
 Template.fam.rendered = function() {
 
-	var mainContext = Engine.createContext();
+	mainContext = Engine.createContext();
 	var surface = new Surface({
 		content: '<ul>' +
 			'<li>item1</li>' +
@@ -48,7 +54,8 @@ Template.fam.rendered = function() {
 	});
 
 	var modifier = new Modifier({
-		origin: [0, 0]
+		origin: [0, 0],
+		align: [0, 0]
 	})
 
 	mainContext.add(modifier).add(surface);
@@ -56,13 +63,13 @@ Template.fam.rendered = function() {
 
 Template.fav.rendered = function() {
 
-	var mainContext = Engine.createContext();
+	// var mainContext = Engine.createContext();
 	var surface = new Surface({
 		content: '<ul>' +
 			'<li>item3</li>' +
 			'<li>item4</li>' +
 			'</ul>',
-		size: [50, undefined],
+		size: [100, 100],
 		properties: {
 			color: 'white',
 			textAlign: 'center',
@@ -71,25 +78,27 @@ Template.fav.rendered = function() {
 		}
 	});
 
-	var sizeModifier = new Modifier({
-		size: [100, 100]
-	});
-
 	var modifier = new Modifier({
 		origin: [0, 0],
-		align: [1, 1],
-		transform: Transform.translate(0, -100, 0)
+		align: [0, 0],
+		// transform: Transform.translate(200, 100, 0)
 	});
 
-	mainContext.add(sizeModifier).add(modifier).add(surface);
+	mainContext.add(modifier).add(surface);
+
+	surface.on('click', function() {
+		surface.setContent('CLICKED')
+	})
 };
 
-Template.fav.helpers({
-	name: function() {
-		return 'handlebars';
+/*
+Template.fav.events({
+	'click': function(e, t) {
+		var famousComponent = famousCmp.dataFromTpl(t);
+		famousComponent.setContent('clicked!');
 	}
 })
-
+*/
 /////////////////////////////////////////////////////////
 
 

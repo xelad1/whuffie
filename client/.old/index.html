@@ -5,6 +5,8 @@
 
 <body>
 
+<!-- ORIGINAL TXN STREAMER STUFF -->
+<!--
 	<header class="navbar">
 		<div class="navbar-inner">
 			<a class="brand" href="/">Stellar Txn Streamer</a>
@@ -18,16 +20,26 @@
 	<div>
 		{{> txns}}
 	</div>
+-->
 
-<!--
 	{{> fam}}
 	{{> fav}}
--->
+
 
 </body>
 
 
 
+<!--  FAMO.US TEMPLATES  -->
+
+<template name="fam"></template>
+
+<template name="fav"></template>
+
+
+
+
+<!--  TEMPLATES  -->
 <template name="txns">
 	<div class="txns-container">
 		<div class="txn-list-header"><h4>Live Transactions on the Stellar network:</h4></div>
@@ -101,7 +113,3 @@ role="tab">Configuration</a></li>
 	</div>
 </template>
 
-
-<template name="fam"></template>
-
-<template name="fav"></template>
