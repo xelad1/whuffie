@@ -1,13 +1,10 @@
 // var ripple = require('ripple-lib')
 var stellar = require('stellar-lib');
 var Websocket = require('ws');
-var DDPClient = require('ddp');
+var ddp = require('./ddp_setup');     // our ddp funcs and cxn
 // var login = require('ddp-login');  // https://github.com/vsivsi/ddp-login
 
 var classes = require('./db-schema');   // imports our unique txn classes
-
-var ddpHost = 'localhost';
-var ddpPort = 8080;
 
 /*
 NEED TO:
@@ -38,82 +35,14 @@ bonus:
 // when publishing to meteor's site, update this info accordingly
 // since this run locally but our meteor server won't
 
-var ddpClient = new DDPClient({
-	// production notes:
-	/*
-
-	// logging in with username (NOTE: use ddp-login)
-	  ddpclient.call(
-	    "login",
-	    [{
-	      user : { username : "username" },
-	      password : "password"
-	    }],
-	    function (err, result) { ... }
-	  );
-
-	//
-
-	*/
-	host: ddpHost,
-	port: ddpPort,
-	auto_reconnect: true,
-	auto_reconnect_timer: 500,
-	use_ssl: false,
-	maintain_collections: false
-});
-
-ddpClient.connect(function(err) {
+ddp.ddpClient.connect(function(err) {
 	if (err) {
 		console.log('There\'s been an error connecting to the Meteor server...');
 		return;
 	}
-	console.log('Connecting to the Meteor server on port ' + ddpPort + '...');
+	console.log('Connecting to the Meteor server on port ' + ddp.ddpPort + '...');
 });
 
-// define the ddp call to the server
-function insertTxn(txn) {
-	ddpClient.call(
-		'addTxn',     // method name
-		[txn],        // array of parameters
-
-		// returns the method call results
-		function(err, result) {
-			if (err) {
-				console.log('There was an error calling addTxn: ' + err);
-			} else {
-				// result returns undefined
-				console.log('Successfully called and returned from addTxn: ' + result);
-			}
-		},
-
-		// fires when the server is finished with the called method
-		function() {
-			console.log('Updated DB successfully!');
-		}
-	);
-}
-
-function createUser(userInfo) {
-  ddpClient.call(
-    'addUser',
-    [userInfo],
-    function(err, res) {
-      if (err) {
-        console.log('There was an error creating the user: ' + err);
-      } else {
-        console.log('Successfully called and returned from addUser: ' + res);
-      }
-    },
-    function() {
-      console.log('Updated DB successfully!')
-    }
-  )
-}
-
-////////////////////////////////////////////////////////////
-/* THE GOOD STUFF */
-////////////////////////////////////////////////////////////
 var network_name = process.argv[2];
 var ws;
 if (network_name === 'local') {
@@ -128,7 +57,6 @@ if (network_name === 'local') {
 		console.log('Incorrect usage')
 }
 
-
 ws.on('open', function() {
 	console.log('Connecting to the ' + network_name + ' server using ws...');
 	
@@ -138,6 +66,12 @@ ws.on('open', function() {
 	// subscribes to txn stream, however you only get the txns on ledger close
 	ws.send('{"command": "subscribe", "streams": ["transactions"]}');
 });
+
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+/* THE GOOD STUFF */
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
 
 ws.on('message', function(msg) {
 	
@@ -183,10 +117,12 @@ ws.on('message', function(msg) {
       if (memoObj.memodata.type === 'user') {
         // console.log('its of memodata type user');
 
-        var user = new classes.UserInfo(msg_json, memoObj).createUser();
-        createUser(user);
-      }
+        if (true) {
+          var user = new classes.UserInfo(msg_json, memoObj).createUser();
+          ddp.createUser(user);
 
+        }
+      }
     }
 	}
 

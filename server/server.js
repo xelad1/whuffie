@@ -8,6 +8,10 @@ Meteor.methods({
 
   'addUser': function(userInfo) {
     Users.insert(userInfo);
+  },
+
+  'isUser': function(id) {
+    return Users.find({ _id: id })
   }
 
   /*
