@@ -1,3 +1,5 @@
+// invalidated without famous-init.js
+/*
 Meteor.startup(function() {
 	// this is the main page that loads at '/'
 	// for now, it is a simple headerfooter layout with grids in the content and footer
@@ -69,3 +71,4 @@ Meteor.startup(function() {
 	}
 
 });
+*/

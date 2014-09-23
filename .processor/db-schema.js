@@ -1,5 +1,5 @@
 /*
-this should hold our classes for objs pulled from the ledger
+this should hold our classes for DB ENTRIES FROM MEMOS
 from our responses from the ledger, we will create appropriate objs containing:
 	txn information
 	anything necessary to displaying the post
@@ -11,13 +11,26 @@ from our responses from the ledger, we will create appropriate objs containing:
 var stellar = require('stellar-lib');
 var utils = stellar.utils;
 
+exports.BasicSTRTransaction = BasicSTRTransaction;
+exports.Memo = Memo;
+
+function Memo(msg) {
+  // gets passed in the Memo obj of the Memos array
+  // this should be inherited from
+
+  var memo = msg.transaction.Memos[0].Memo;
+  this.memotype = utils.hexToString(memo.MemoType);
+  this.memodata = utils.hexToString(memo.MemoData);
+}
+
 function BasicSTRTransaction(msg) {
 	// this is a basic class for storing simple STRTransactions
 	// the main changes you'll see will be additions to the Memo obj of the Memos array
+  // msg == json of the received message
 
   var day_zero = 946684800;
 
-	this.type = 'BasicSTRTransaction';
+	this.type = 'BasicSTRTransaction';    // ??? why ???
 
 	this._id = msg.transaction.hash;
 	this.sender = msg.transaction.Account;
@@ -26,26 +39,37 @@ function BasicSTRTransaction(msg) {
 	this.ledger = msg.ledger_index;
 	this.date = new Date((day_zero + msg.transaction.date) * 1000);
 
-	var memoObj = new Memo(msg.transaction.Memos[0].Memo);
+	var memoObj = new Memo(msg);
 	this.memotype = memoObj.memotype;
 	this.memodata = memoObj.memodata;
 }
 
+function UserInfo(msg, memoObj) {
+  /*
+  this will be our User obj, sent to the server's Users collection
+  ** WHEN USED: **
+  * make sure you validate the msg
 
-function Memo(memo) {
-	// gets passed in the Memo obj of the Memos array
-	// this should be inherited from
+  two halves of data:
+    what comes from the memos that needs to be stored
+    what comes from the rest which proves the authenticity of the entry's info
+  */
 
-	this.memotype = utils.hexToString(memo.MemoType);
-	this.memodata = utils.hexToString(memo.MemoData);
+  var day_zero = 946684800;
+
+  //////////////////////
+  // memo info:
+  // derived from memoObj.memodata;
+
+  // TODO: **** DEFINE OUR METHOD OF STORING IDENTITY INFO IN TXNS, IT IS THE NECESSARY NEXT STEP ****
+
+
+  /////////////////////
+  // authenticity info:
+  this._id = msg.transaction.Account;   // since user addrs are unique
+  // this.hash = msg.transaction.hash;
+
 }
-
-
-
-
-
-exports.BasicSTRTransaction = BasicSTRTransaction;
-
 
 ////////////////////////////////////////////
 ////////////////////////////////////////////

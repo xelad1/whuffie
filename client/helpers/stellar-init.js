@@ -48,7 +48,7 @@ function signtx(secret, tx_in) {
 */
 
 Meteor.startup(function() {
-	// sets the root acct info, establishes and sets the remote obj
+	// sets the root acct info, establishes and sets the local remote obj
 
 	if (typeof stellar !== 'undefined') {
 		lib_name = 'Stellar';
@@ -87,7 +87,9 @@ str500 = '######################################################################
 str400 = '####################################################################################################################################################################### this string is exactly 400 characters long #############################################################################################################################################################################################';
 */
 
-submitTxn = function(amt, memoType, memoData) {
+testRcvrAddr = 'gM4Fpv2QuHY4knJsQyYGKEHFGw3eMBwc1U';
+
+submitTxn = function(amt, currencyCode, rcvrAddr, memoObj) {
 	// this is a base func that sends STR with memo data
 
 	/*
@@ -95,10 +97,11 @@ submitTxn = function(amt, memoType, memoData) {
 		step 2: w/in remote.connect, create txn and fill out and submit txn
 		step 3: w/in tx.submit, if res, remote.disconnect()
 	 */
-	var rcvrAddr = 'gM4Fpv2QuHY4knJsQyYGKEHFGw3eMBwc1U';
-	amt = Amount.from_human(amt + 'STR');
 
-	//
+  // TODO: will Amount.from_human() work w/ codes other than STR?
+  amt = Amount.from_human(amt + currencyCode);
+
+	// TODO: do you need to connect and disconnect w/ every txn?
 	remote.connect(function() {
 
 		var tx = remote.transaction();
@@ -109,12 +112,14 @@ submitTxn = function(amt, memoType, memoData) {
 			amount: amt
 		});
 
-		var memoObj = new Memo(memoType, memoData);
+    // where the memo is inserted
+
 		// the memo obj must have field 'Memo'
+    // we will set the memo to IdentityMemo or something later
 		tx.tx_json.Memos = [ { Memo: memoObj } ];
 
-		console.log('sending the txn...');
 
+		console.log('sending the txn...');
 		tx.submit(function (err, res) {
 			if (err) {
 				console.log('error: ' + err.result_message);
@@ -127,8 +132,6 @@ submitTxn = function(amt, memoType, memoData) {
 		});
 	});
 };
-
-
 
 
 

@@ -24,7 +24,7 @@ ageString = function() {
 	}
 },
 
-submitSTRTxn = function(event, template) {
+submitSTRTxnFromForm = function(event, template) {
 	// TODO: refactor this as a closure for both str and wfi txns
 
 	event.preventDefault();
@@ -79,4 +79,4 @@ updateConfig = function(event, template) {
 
 	input_addr.value = '';
 	input_key.value = '';
-}
+};

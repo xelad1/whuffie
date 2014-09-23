@@ -74,8 +74,8 @@ ddpClient.connect(function(err) {
 // define the ddp call to the server
 function insertTxn(txn) {
 	ddpClient.call(
-		'addTxn',
-		[txn],
+		'addTxn',     // method name
+		[txn],        // array of parameters
 
 		// returns the method call results
 		function(err, result) {
@@ -127,35 +127,50 @@ ws.on('message', function(msg) {
 	var msg_json = JSON.parse(msg);
 	// console.log(msg_json);
 
-	if (
-		msg_json.hasOwnProperty('transaction') &&
-		msg_json.status === 'closed' &&
-		msg_json.engine_result === 'tesSUCCESS'
-	) {
+	if (isValidTxn(msg_json)) {
 
 		// var memoObj = new classes.Memo(msg_json.transaction.Memos[0].Memo);
 		// ergo, we should store a msg_type at the root of the memoObj for fast if/else reference
-		//
-
-		/////////////////////////////
-		// if this is a basic STR txn (this will go away later)
-		if (msg_json.transaction.TransactionType === 'Payment') {
-			var txn = new classes.BasicSTRTransaction(msg_json);
-			insertTxn(txn);
-		}
-
-		/////////////////////////////
-		// if this is a identity store
-
-		/////////////////////////////
-		// if this is a identity update
-
-		/////////////////////////////
+    var memoObj = new classes.Memo(msg_json);
+    if ( memoObj.memotype === 'wufi') {
 
 
+      /////////////////////////////
+      // if this is a basic STR txn... (this will go away later)
+      /*
+       if (msg_json.transaction.TransactionType === 'Payment') {
+       var txn = new classes.BasicSTRTransaction(msg_json);
+       insertTxn(txn);
+       }
+       */
+
+      /////////////////////////////
+      // if this is a UserInfo txn...
+      // if (memoObj.memodata.type === 'userinfo')
+        // if Users.find({ _id: msg_json.transaction.Account })
+          // FOLLOW UPDATE PROTOCOL":
+          /*
+
+           */
+
+        // else
+          // FOLLOW CREATE PROTOCOL:
+          /*
+
+           */
+
+
+    }
 	}
 
 });
+
+function isValidTxn(msg_json) {
+  return msg_json.hasOwnProperty('transaction') &&
+    msg_json.status === 'closed' &&
+    msg_json.engine_result === 'tesSUCCESS';
+}
+
 
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
