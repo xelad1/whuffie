@@ -12,6 +12,7 @@ var stellar = require('stellar-lib');
 var utils = stellar.utils;
 
 exports.BasicSTRTransaction = BasicSTRTransaction;
+exports.UserInfo = UserInfo;
 exports.Memo = Memo;
 
 function Memo(msg) {
@@ -20,7 +21,7 @@ function Memo(msg) {
 
   var memo = msg.transaction.Memos[0].Memo;
   this.memotype = utils.hexToString(memo.MemoType);
-  this.memodata = utils.hexToString(memo.MemoData);
+  this.memodata = JSON.parse(utils.hexToString(memo.MemoData));
 }
 
 function BasicSTRTransaction(msg) {
@@ -53,6 +54,10 @@ function UserInfo(msg, memoObj) {
   two halves of data:
     what comes from the memos that needs to be stored
     what comes from the rest which proves the authenticity of the entry's info
+
+  both halves are needed when:
+    creating an obj for a new user
+    creating an obj that will be used to update a user
   */
 
   var day_zero = 946684800;
@@ -63,11 +68,31 @@ function UserInfo(msg, memoObj) {
 
   // TODO: **** DEFINE OUR METHOD OF STORING IDENTITY INFO IN TXNS, IT IS THE NECESSARY NEXT STEP ****
 
-
   /////////////////////
   // authenticity info:
-  this._id = msg.transaction.Account;   // since user addrs are unique
   // this.hash = msg.transaction.hash;
+
+  this.createUser = function() {
+    // creates the obj that will be the user's db entry
+    return this.user = {
+      _id: msg.transaction.Account,
+      username: memoObj.memodata.username,
+      basics: memoObj.memodata.basics,    // should be obj w/ bio, location, first and last names
+
+      payments: [{
+        type: 'stellar',
+        address: msg.transaction.Account,
+        proof: {    // proves that this username is associated w/ this addr
+          ledger_index: msg.ledger_index,
+          tx_hash: msg.transaction.hash
+        }
+      }],
+
+      openspecs_version: '0.3'
+      // wufi_schema_version: '0.1'
+    }
+  }
+
 
 }
 
@@ -84,7 +109,8 @@ function UserInfo(msg, memoObj) {
   meta:
     { AffectedNodes: [ [Object], [Object] ],
       TransactionIndex: 0,
-      TransactionResult: 'tesSUCCESS' },
+      TransactionResult: 'tesSUCCESS'
+    },
   status: 'closed',
 	transaction:
     { Account: 'ganVp9o5emfzpwrG5QVUXqMv8AgLcdvySb',
@@ -107,9 +133,10 @@ function UserInfo(msg, memoObj) {
       TransactionType: 'Payment',
       TxnSignature: 'F26A24E0763800034FD08342E4D029DC8C258377898B66542A57FF24DF9A3DCB9CD03300DA3B0918FE4216543450152AC7299577FBF9209E09B364ED75EBD109',
       date: 462938250,
-      hash: '1B5BA850F4A98A452BDDE6A2A2D607BB990D4921F66341D8F5F01E16765A9894'},
+      hash: '1B5BA850F4A98A452BDDE6A2A2D607BB990D4921F66341D8F5F01E16765A9894'
+    },
   type: 'transaction',
-  validated: true }
+  validated: true
 }
 
  */

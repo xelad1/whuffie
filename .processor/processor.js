@@ -94,6 +94,23 @@ function insertTxn(txn) {
 	);
 }
 
+function createUser(userInfo) {
+  ddpClient.call(
+    'addUser',
+    [userInfo],
+    function(err, res) {
+      if (err) {
+        console.log('There was an error creating the user: ' + err);
+      } else {
+        console.log('Successfully called and returned from addUser: ' + res);
+      }
+    },
+    function() {
+      console.log('Updated DB successfully!')
+    }
+  )
+}
+
 ////////////////////////////////////////////////////////////
 /* THE GOOD STUFF */
 ////////////////////////////////////////////////////////////
@@ -129,15 +146,20 @@ ws.on('message', function(msg) {
 
 	if (isValidTxn(msg_json)) {
 
-		// var memoObj = new classes.Memo(msg_json.transaction.Memos[0].Memo);
+	// var memoObj = new classes.Memo(msg_json.transaction.Memos[0].Memo);
 		// ergo, we should store a msg_type at the root of the memoObj for fast if/else reference
+
+    // console.log('its a valid txn');
+
     var memoObj = new classes.Memo(msg_json);
     if ( memoObj.memotype === 'wufi') {
 
+      // console.log('its of memotype wufi');
+      // console.log('memoobj looks like this: ' + JSON.stringify(memoObj));
 
-      /////////////////////////////
+      /* ///////////////////////////
       // if this is a basic STR txn... (this will go away later)
-      /*
+
        if (msg_json.transaction.TransactionType === 'Payment') {
        var txn = new classes.BasicSTRTransaction(msg_json);
        insertTxn(txn);
@@ -146,7 +168,7 @@ ws.on('message', function(msg) {
 
       /////////////////////////////
       // if this is a UserInfo txn...
-      // if (memoObj.memodata.type === 'userinfo')
+      // if (memoObj.memodata.type === 'user')
         // if Users.find({ _id: msg_json.transaction.Account })
           // FOLLOW UPDATE PROTOCOL":
           /*
@@ -158,7 +180,12 @@ ws.on('message', function(msg) {
           /*
 
            */
+      if (memoObj.memodata.type === 'user') {
+        // console.log('its of memodata type user');
 
+        var user = new classes.UserInfo(msg_json, memoObj).createUser();
+        createUser(user);
+      }
 
     }
 	}
@@ -167,7 +194,7 @@ ws.on('message', function(msg) {
 
 function isValidTxn(msg_json) {
   return msg_json.hasOwnProperty('transaction') &&
-    msg_json.status === 'closed' &&
+    msg_json.status === 'closed' &&   // msg_json.validated ???
     msg_json.engine_result === 'tesSUCCESS';
 }
 
@@ -176,7 +203,7 @@ function isValidTxn(msg_json) {
 /////////////////////////////////////////////////////
 
 // closes the local stellard ledger every `timeout` ms
-var timeout = 7000;
+var timeout = 10000;
 if (network_name === 'local') {
 	(function (interval) {
 		var Remote = stellar.Remote;
