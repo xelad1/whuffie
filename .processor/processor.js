@@ -4,7 +4,9 @@ var Websocket = require('ws');
 var ddp = require('./ddp_setup');     // our ddp funcs and cxn
 // var login = require('ddp-login');  // https://github.com/vsivsi/ddp-login
 
-var classes = require('./db-schema');   // imports our unique txn classes
+var db = require('./db-schema');   // imports our unique txn classes
+
+var base_fee = 200 * 10e6;
 
 /*
 NEED TO:
@@ -85,7 +87,7 @@ ws.on('message', function(msg) {
 
     // console.log('its a valid txn');
 
-    var memoObj = new classes.Memo(msg_json);
+    var memoObj = new db.Memo(msg_json);
     if ( memoObj.memotype === 'wufi') {
 
       // console.log('its of memotype wufi');
@@ -117,10 +119,23 @@ ws.on('message', function(msg) {
       if (memoObj.memodata.type === 'user') {
         // console.log('its of memodata type user');
 
-        if (true) {
-          var user = new classes.UserInfo(msg_json, memoObj).createUser();
-          ddp.createUser(user);
+        var user;
+        var userId = msg_json.transaction.Account;
 
+        if (msg_json.transaction.Amount === 5 * base_fee) {
+          // 5 * base_fee signifies username registration == new public user
+          user = new db.UserInfo(msg_json, memoObj).createUserInfo();
+          ddp.setUserInfo('insertUserInfo', user);
+
+        } else {
+          user = new db.UserInfo(msg_json, memoObj).updateUserInfo();
+
+          // TODO: FINALIZE MEMOS so you can IF TEST the RIGHT METEOR METHODS
+            // if test against the userInfo types (payment, profile, etc)
+
+          if () {
+            ddp.setUserInfo('setUserInfo', user, userId);
+          }
         }
       }
     }

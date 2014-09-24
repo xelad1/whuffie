@@ -63,24 +63,24 @@ function insertTxn(txn) {
 
     // fires when the server is finished with the called method
     function() {
-      console.log('Updated DB successfully!');
+      console.log('finished calling insertTxn');
     }
   );
 }
 
-function createUser(userInfo) {
+function setUserInfo(meteorMethod, userInfo, id) {
   ddpClient.call(
-    'addUser',
-    [userInfo],
+    meteorMethod,
+    [id, userInfo],
     function(err, res) {
       if (err) {
-        console.log('There was an error creating the user: ' + err);
+        console.log('There was an error creating/updating the user: ' + err.toString());
       } else {
-        console.log('Successfully called and returned from addUser: ' + res);
+        console.log('Successfully called and returned from upsertUser: ' + res);
       }
     },
     function() {
-      console.log('Updated DB successfully!')
+      console.log('finished calling upsertUser')
     }
   )
 }
@@ -89,5 +89,6 @@ function createUser(userInfo) {
 
 exports.ddpPort = ddpPort;
 exports.ddpClient = ddpClient;
+
 exports.insertTxn = insertTxn;
-exports.createUser = createUser;
+exports.setUserInfo = setUserInfo;

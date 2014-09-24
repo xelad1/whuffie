@@ -6,13 +6,19 @@ Meteor.methods({
 		Transactions.insert(txn);
 	},
 
-  'addUser': function(userInfo) {
-    Users.insert(userInfo);
+  'insertUserInfo': function(userInfo) {
+    UsersPublic.insert(userInfo);
   },
 
-  'isUser': function(id) {
-    return Users.find({ _id: id })
-  }
+  'setUserInfo': function(userInfo, id) {
+    UsersPublic.update(
+      { "_id": id },
+      { $set: userInfo }
+    );
+  },
+
+  // pushUserInfo
+    // pushes new payment and profile info into their arrays in db
 
   /*
   'updateUser': function(newUserInfo) {
@@ -20,5 +26,36 @@ Meteor.methods({
     // merge existing user obj with newUserInfo
   }
    */
-	
+
+  /////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////
+  // SERVER-SIDE CONTROL OF CLIENT (for third-party app stuff)
+  /*
+  this way (hopefully), you get the best of both worlds of push and pull
+  ** you still need to keep the server secure and free from arbitrary cmds
+
+  steps:
+    1. define Meteor.method for CALLING the client-share func
+    2. define Meteor.clientMethod for sharing/nixing wufi
+      >> we can define share limits that would otherwise need 2FA
+      >> this could also get the
+    3. ON BUTTON PRESSES, user simply shares
+    4. WHEN AUTHENTICATED ON ANOTHER SERVICE (e.g. logged in wufi and tw w/ tw)
+      >> 'pay with wufi' / share-walls
+        - click a button to pay/share
+        - service sends API request to our server
+        - upon verification (& user login/auth), server calls cli-share-wfi
+
+      >> 'twitter sync'
+        - triggers Meteor.call >> Meteor.clientCall(share-wufi-tw-acct, params, from, server)
+
+      >> proofs
+        >> github
+          - client types in username, gets copypasta
+          - client stores it in gist
+          - server polls for update on gists, then calls cli-store-proof-txn
+
+   */
+
+
 });

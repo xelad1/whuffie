@@ -9,3 +9,5 @@ insecure
 bootstrap
 famono
 npm
+mongo-livedata
+

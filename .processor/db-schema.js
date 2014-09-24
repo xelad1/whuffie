@@ -60,7 +60,7 @@ function UserInfo(msg, memoObj) {
     creating an obj that will be used to update a user
   */
 
-  var day_zero = 946684800;
+  // var day_zero = 946684800;
 
   //////////////////////
   // memo info:
@@ -72,12 +72,15 @@ function UserInfo(msg, memoObj) {
   // authenticity info:
   // this.hash = msg.transaction.hash;
 
-  this.createUser = function() {
-    // creates the obj that will be the user's db entry
+  this.createUserInfo = function() {
+    // creates the obj that will be the user's first db entry
     return this.user = {
+      // initialize the first user db entry with expected fields:
+        // payments, basics, profiles, photos, misc, etc
+
       _id: msg.transaction.Account,
       username: memoObj.memodata.username,
-      basics: memoObj.memodata.basics,    // should be obj w/ bio, location, first and last names
+      basics: memoObj.memodata.basics || {},    // should be obj w/ bio, location, first and last names
 
       payments: [{
         type: 'stellar',
@@ -88,9 +91,27 @@ function UserInfo(msg, memoObj) {
         }
       }],
 
+      profiles: [],
+
       openspecs_version: '0.3'
       // wufi_schema_version: '0.1'
     }
+  };
+
+  this.updateUserInfo = function() {
+
+    var memodata = memoObj.memodata;
+
+    // if memodata.hasProp(), which can be:
+      // basics     // bio, names, location
+      // payment    // btc addr, venmo username, etc + proofs
+      // profile    // fb, tw, sc, ig, + proofs
+      // >> then, call the right func for the right update
+
+    if (memodata.hasOwnProperty('basics')) {
+
+    }
+
   }
 
 
