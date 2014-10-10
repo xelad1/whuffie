@@ -22,7 +22,7 @@ ageString = function() {
 	} else {
 		return 'some time ago';
 	}
-},
+};
 
 submitSTRTxnFromForm = function(event, template) {
 	// TODO: refactor this as a closure for both str and wfi txns

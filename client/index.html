@@ -5,10 +5,46 @@
 </head>
 
 <body>
-  Main Page
+
+  {{> mainMenu}}
+
+  <div>
+    Main Page
+  </div>
+
+  {{> tabMenu}}
+
 </body>
 
 
-<template name="practice">
-  Hello all!
+<template name="mainMenu">
+  <div class="ui compact menu">
+    <a class="item">Home</a>
+    <a class="item">Inbox</a>
+  </div>
+</template>
+
+<template name="tabMenu">
+  <div class="ui pointing secondary demo menu">
+    <a class="active red item" data-tab="first">First Tab</a>
+    <a class="blue item" data-tab="second">Second Tab</a>
+    <a class="green item" data-tab="third">Third Tab</a>
+  </div>
+
+  {{> firstTab}}
+  {{> secondTab}}
+  {{> thirdTab}}
+
+</template>
+
+<template name="firstTab">
+  <div class="ui active tab segment" data-tab="first">First text</div>
+</template>
+
+<template name="secondTab">
+  <div class="ui tab segment" data-tab="second">Second text</div>
+</template>
+
+<template name="thirdTab">
+  <div class="ui tab segment" data-tab="third">Third text</div>
 </template>

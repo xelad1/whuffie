@@ -72,3 +72,10 @@ Meteor.startup(function() {
 
 });
 */
+
+Template.tabMenu.rendered = function() {
+
+  $('.ui.demo .item').tab();
+
+
+};
