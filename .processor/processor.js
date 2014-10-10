@@ -8,19 +8,6 @@ var db = require('./memostore.js');   // imports our unique txn classes
 var base_fee = 200 * 10e6;
 
 /*
-NEED TO:
-	1. connect to stellard using websockets
-			[COMPLETE]
-	2. use the right rpc command to listen to the right txns (or all of them)
-			[COMPLETE]
-	3. parse them
-			[COMPLETE] 
-			implement your own payments.js using the browser inspector
-			[COMPLETE]
-	4. each onmessage event needs to store the parsed txns into the db
-			[COMPLETE]
-*/
-/*
 optional:
 	4. have user only get the txns pertaining to their Session.address
 	5. have user fill out boxes and sign and submit txns and watch them come through
