@@ -49,7 +49,7 @@ function UserInfo(msg, memoObj) {
   /*
   this will be our User obj, sent to the server's Users collection
   ** WHEN USED: **
-  * make sure you validate the msg
+  * make sure you validate the msg BEFORE passing it in
 
   two halves of data:
     what comes from the memos that needs to be stored
@@ -72,9 +72,10 @@ function UserInfo(msg, memoObj) {
   // authenticity info:
   // this.hash = msg.transaction.hash;
 
+  // these could go into UserInfo.prototype, but it wouldn't change how their used and called
   this.createUserInfo = function() {
     // creates the obj that will be the user's first db entry
-    return this.user = {
+    return this.info = {
       // initialize the first user db entry with expected fields:
         // payments, basics, profiles, photos, misc, etc
 

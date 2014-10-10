@@ -1,10 +1,9 @@
-// var ripple = require('ripple-lib')
 var stellar = require('stellar-lib');
 var Websocket = require('ws');
 var ddp = require('./ddp_setup');     // our ddp funcs and cxn
 // var login = require('ddp-login');  // https://github.com/vsivsi/ddp-login
 
-var db = require('./db-schema');   // imports our unique txn classes
+var db = require('./memostore.js');   // imports our unique txn classes
 
 var base_fee = 200 * 10e6;
 
@@ -119,16 +118,17 @@ ws.on('message', function(msg) {
       if (memoObj.memodata.type === 'user') {
         // console.log('its of memodata type user');
 
-        var user;
+        var info;
         var userId = msg_json.transaction.Account;
+        var txAmount = msg.transaction.Amount;
 
-        if (msg_json.transaction.Amount === 5 * base_fee) {
+        if (txAmount === 5 * base_fee) {
           // 5 * base_fee signifies username registration == new public user
-          user = new db.UserInfo(msg_json, memoObj).createUserInfo();
-          ddp.setUserInfo('insertUserInfo', user);
+          info = new db.UserInfo(msg_json, memoObj).createUserInfo();
+          ddp.setUserInfo('insertUserInfo', info);
 
-        } else {
-          user = new db.UserInfo(msg_json, memoObj).updateUserInfo();
+        } else if (txAmount === base_fee * .5) {
+          info = new db.UserInfo(msg_json, memoObj).updateUserInfo();
 
           // TODO: FINALIZE MEMOS so you can IF TEST the RIGHT METEOR METHODS
             // if test against the userInfo types (payment, profile, etc)

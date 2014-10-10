@@ -27,9 +27,16 @@ Meteor.methods({
   }
    */
 
+
+
+
+  // discussion on server holding keys vs not
+    // almost COMPLETELY NON-SENSICAL AND USELESS
+    // b/c server can't call client if client isnt on page/logged in:
   /////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////
   // SERVER-SIDE CONTROL OF CLIENT (for third-party app stuff)
+  // (may not be necessary at all)
   /*
   this way (hopefully), you get the best of both worlds of push and pull
   ** you still need to keep the server secure and free from arbitrary cmds
@@ -57,5 +64,9 @@ Meteor.methods({
 
    */
 
+  // the only thing 'pull' schemes do is let server charge you when
+    // you don't want/have keys and crypto on hand/in browser
+  //
+  //
 
 });
