@@ -1,81 +1,115 @@
-// invalidated without famous-init.js
-/*
-Meteor.startup(function() {
-	// this is the main page that loads at '/'
-	// for now, it is a simple headerfooter layout with grids in the content and footer
+// CONTROLLER HELPERS (these help populate the models)
+Template.menuSlider.rendered = function() {
+  $('#menuSlider').sidebar();
+};
 
-	var mainContext = Engine.createContext();
+Template.shareModal.rendered = function() {
+  $('#shareModal').modal();
 
-	var layout;
+  // sets up the simple shareModal validation
+  // this will run against
+  $('#simpleShareModalForm')
+    .form(simpleShareModalForm_validationRules, {
+      inline: true,
+      on: 'blur'
+    });
+};
 
-	createLayout();
-	addHeader();
-	addContent();
-	addFooter();
+// CONTROLLER EVENTS (these manipulate data and models based on user input)
+Template.header.events({
 
-	function createLayout() {
-		layout = new HeaderFooterLayout({
-			headerSize: 120,
-			footerSize: 120
-		});
+  "click .menu-slider-button" : function() {
+    $('#menuSlider').sidebar('toggle');
+  },
 
-		mainContext.add(layout);
-	}
+  "click .share-modal-button" : function() {
+    $('#shareModal')
+      .modal('setting', {
+        closable: true,
+        onDeny : function() {
+          console.log('discarding txn...');
+        },
+        onApprove: function() {
+          /*
+          the submit-txn button needs to trigger the following:
+          - get data from form fields
+          - a client-side (UI) check of the data being typed in
+          -
+          - a creation of the memoObj
+          - a creation and submission of the txn to the ledger
+          - an animation showing the process proceeding and one upon completion/failure
 
-	function addHeader() {
-		layout.header.add(new Surface({
-			content: "Header",
-			classes: ["grey-bg"],
-			properties: {
-				lineHeight: "110px",
-				textAlign: "center",
-				color: "white"
-			}
-		}));
-	}
+          therefore,
+            which parts need to be bundled in a class?
+            which parts can be inherited from other classes?
+            which parts are separated into
+              validation
+              creation
+              submission
+              animation?
+          */
 
-	function addContent() {
-		layout.content.add(createGrid( 'content', [2, 1] ));
-	}
+          return true;
 
-	function addFooter() {
-		layout.footer.add(createGrid( 'footer', [3, 1] ));
-	}
+        }
+      })
+      .modal('show');
+  }
 
-	function createGrid( section, dimensions ) {
-		var grid = new GridLayout({
-			dimensions: dimensions
-		});
-
-		var surfaces = [];
-		grid.sequenceFrom(surfaces);
-
-		for(var i = 0; i < dimensions[0]; i++) {
-			surfaces.push(new Surface({
-
-				// try rendering with a template using raix's library
-				template: Template.practice,
-				// content: section + ' ' + (i + 1),
-
-				size: [undefined, undefined],
-				properties: {
-					backgroundColor: "hsl(" + (i * 360 / 8) + ", 100%, 50%)",
-					color: "#404040",
-					textAlign: 'center',
-					verticalAlign: 'middle'
-				}
-			}));
-		}
-
-		return grid;
-	}
 
 });
-*/
 
-Template.tabMenu.rendered = function() {
+/*
+var submitShareTxnFromForm = function(event, template) {
 
-  $('.ui.demo .item').tab();
+	event.preventDefault();
 
+	var btn = $('#submit-txn');
+	btn.button('loading');
+
+	var input_rcvr = template.find('input[id=recipient-addr]');
+	var input_amt = template.find('input[id=send-amount]');
+  var amt = input_amt.value;
+
+	var rcvr = input_rcvr.value.trim();
+	// fetches user's address from mini-contactbook w/in Session
+  rcvr = Session.get(rcvr)
+
+	var amt = Amount.from_human(amt + 'WFI');
+
+  // TypedMemo is a class that creates a memoObj from assigned props
+    // specific to a type of txn (deal, post, identity, etc)
+	var memo = new TypedMemo({
+	  msg: blah,
+	  blah: blahdy
+	...
+	});
+	var memoObj =
+
+	var info = {
+	  from: myAddr,
+	  to: rcvr,
+	  amount: amt
+	}
+
+  // ShareTxn is a class that creates and submits txns
+  var tx = new ShareTxn(info, memoObj);
+
+  // callback must:
+    parses errors for user
+    animate the waiting and success gifs
+  tx.submit(function(err, res) {
+    if (err) {}
+    else {
+
+
+    }
+  });
 
 };
+
+*/
+
+/////////////////////////////////
+// these are validation funcs
+/////////////////////////////////

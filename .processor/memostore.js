@@ -14,20 +14,22 @@ var utils = stellar.utils;
 exports.BasicSTRTransaction = BasicSTRTransaction;
 exports.UserInfo = UserInfo;
 exports.Memo = Memo;
+exports.Post = Post;
 
 function Memo(msg) {
-  // gets passed in the Memo obj of the Memos array
-  // this should be inherited from
+  // gets passed in the entire msg to get the Memo obj of the Memos array
+  // later, when bundled into a lib, this will be a func w/in the Memo class
 
   var memo = msg.transaction.Memos[0].Memo;
-  this.memotype = utils.hexToString(memo.MemoType);
-  this.memodata = JSON.parse(utils.hexToString(memo.MemoData));
+  // as of wufi-schema v0.1, memoType will always be 'wufi'
+  this.memoType = utils.hexToString(memo.MemoType);
+  this.memoData = JSON.parse(utils.hexToString(memo.MemoData));
 }
 
 function BasicSTRTransaction(msg) {
-	// this is a basic class for storing simple STRTransactions
+	// this is a basic class for storing simple STRTransactions from ledger
 	// the main changes you'll see will be additions to the Memo obj of the Memos array
-  // msg == json of the received message
+  // msg == json of the ledger txn msg
 
   var day_zero = 946684800;
 
@@ -47,13 +49,16 @@ function BasicSTRTransaction(msg) {
 
 function UserInfo(msg, memoObj) {
   /*
-  this will be our User obj, sent to the server's Users collection
+  this class does two things:
+    validates the memo and txnAmount as a genuine Wufi-UserInfo txn
+    creates our User obj, sent to the Meteor's Users collection
+
   ** WHEN USED: **
   * make sure you validate the msg BEFORE passing it in
 
   two halves of data:
     what comes from the memos that needs to be stored
-    what comes from the rest which proves the authenticity of the entry's info
+    what comes from the rest of the txn which proves the authenticity of the entry's info (txnAmount, sourceAddress, etc)
 
   both halves are needed when:
     creating an obj for a new user
@@ -118,6 +123,104 @@ function UserInfo(msg, memoObj) {
 
 }
 
+function Post(msg, memoObj) {
+  /*
+  this class does two things:
+    validates the memo and txnAmount as a genuine Wufi-Post txn
+    creates our User obj, sent to the Meteor's Posts collection
+
+  should be a base class for comments, textless
+  */
+  /*
+  validation:
+    each post must get from txn:
+      sender
+      rcvr
+      new total TrustLine amount for the rcvr
+      data:
+        parentID      // so we know where this post should be shown
+        text          // the text of the msg, probably 200 char limit
+
+    each post must also have fields for/store this data for presentation and analysis:
+      children        // at least an arr of IDs that reply to this post
+
+  */
+
+  var day_zero = 946684800;
+
+  // this.type = 'BasicSTRTransaction';    // ??? why ???
+  this._id = msg.transaction.hash;
+  // could be shortened so that the parentID in ledger Memo is shorter
+  this.senderID = msg.transaction.Account;
+  this.receiverID = msg.transaction.Destination;
+
+  this.amount = msg.transaction.Amount;
+  this.ledgerIndex = msg.ledger_index;
+  this.date = new Date((day_zero + msg.transaction.date) * 1000);
+
+  // this is where we store the memo properties
+  // TODO: this is what will change when we come closer to finalizing the post-memo-schema and creating subclasses for deals, comments, etc from this
+  memoObj = memoObj || new Memo(msg);
+  this.parentID = memoObj.memoData.parentID || null;
+  this.text = memoObj.memoData.text || null;
+  // in ddp_setup or in Meteor.methods, we'll use the parentID to add this post to the correct position of the it's post-thread (post + comment tree)
+  // this.children = {};
+}
+
+/////////////////////////////////
+// these are validation funcs
+// these run in processor.js
+// and verify that the memos being pulled from the ledger are wufi-compliant
+// and ready to be included and shared with users
+/////////////////////////////////
+
+var IdentityMemo = function() {
+  /* called by client when:
+   // they first register their username (
+   // they update profile with bio, name, location
+
+   it needs to create the data Object to be stringified and hexified
+   then, store it as one of it's own properties
+
+   */
+
+  /*
+   needs to keep track of characters in memo
+   needs to store in ledger:
+   // 1. username
+   // 2. profile:
+   // > username
+   // > proof url
+   //
+   */
+
+  // TODO: **** DEFINE THE UPDATE/CREATE MEMO ****
+
+  this.setUsername = function() {
+    // at the end of this func: we must
+    // create this.Memo as a plaintext Memo obj
+
+  };
+
+  /*
+   after everything is set, run:
+   this.memo = new Memo(this.data)
+   this.getMemo = memo.getMemo;
+
+   then when you're ready to share wufi:
+
+   */
+
+};
+
+var ShareMemo = function(data) {
+
+  // do some validation on data to make sure it is ShareMemo compliant
+
+  Memo.call(this, data);
+};
+
+
 ////////////////////////////////////////////
 ////////////////////////////////////////////
 
@@ -155,6 +258,7 @@ function UserInfo(msg, memoObj) {
       TransactionType: 'Payment',
       TxnSignature: 'F26A24E0763800034FD08342E4D029DC8C258377898B66542A57FF24DF9A3DCB9CD03300DA3B0918FE4216543450152AC7299577FBF9209E09B364ED75EBD109',
       date: 462938250,
+      // hash is 32-digit hex
       hash: '1B5BA850F4A98A452BDDE6A2A2D607BB990D4921F66341D8F5F01E16765A9894'
     },
   type: 'transaction',

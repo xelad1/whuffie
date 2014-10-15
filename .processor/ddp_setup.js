@@ -35,17 +35,8 @@ var ddpClient = new DDPClient({
   maintain_collections: false
 });
 
-/*
-ddpClient.connect(function(err) {
-  if (err) {
-    console.log('There\'s been an error connecting to the Meteor server...');
-    return;
-  }
-  console.log('Connecting to the Meteor server on port ' + ddpPort + '...');
-});
-*/
-
 // define the ddp call to the server
+/*
 function insertTxn(txn) {
   ddpClient.call(
     'addTxn',     // method name
@@ -67,7 +58,26 @@ function insertTxn(txn) {
     }
   );
 }
+*/
 
+function insertPost(post) {
+  ddpClient.call(
+    'addPost',
+    [post],
+    function(err, res) {
+      if (err) {
+        console.log('There was an error calling addPost: ', err);
+      } else {
+        console.log('Successfully called and returned from addPost: ', res);
+      }
+    },
+    function() {
+      console.log('finished calling insertPost');
+    }
+  );
+}
+
+/*
 function setUserInfo(meteorMethod, userInfo, id) {
   ddpClient.call(
     meteorMethod,
@@ -84,11 +94,12 @@ function setUserInfo(meteorMethod, userInfo, id) {
     }
   )
 }
+*/
 
 // EXPORTS
 
 exports.ddpPort = ddpPort;
 exports.ddpClient = ddpClient;
 
-exports.insertTxn = insertTxn;
-exports.setUserInfo = setUserInfo;
+exports.insertPost = insertPost;
+// exports.setUserInfo = setUserInfo;

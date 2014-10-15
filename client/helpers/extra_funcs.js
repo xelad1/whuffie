@@ -25,7 +25,6 @@ ageString = function() {
 };
 
 submitSTRTxnFromForm = function(event, template) {
-	// TODO: refactor this as a closure for both str and wfi txns
 
 	event.preventDefault();
 	var btn = $('#submit-txn');

@@ -1,3 +1,6 @@
+// helpers help fill in the model
+// events give data to the controller funcs that do the logics
+
 Template.txns.helpers({
 	txnsList: function() {
 		return Transactions.find({}, {sort: {date: -1}});
@@ -8,7 +11,7 @@ Template.txn.helpers({
 	age: ageString,
 
 	amount: function() {
-		return this.amount/1e6
+		return this.amount/1e6;
 	}
 });
 

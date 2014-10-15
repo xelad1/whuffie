@@ -3,7 +3,7 @@ var Websocket = require('ws');
 var ddp = require('./ddp_setup');     // our ddp funcs and cxn
 // var login = require('ddp-login');  // https://github.com/vsivsi/ddp-login
 
-var db = require('./memostore.js');   // imports our unique txn classes
+var memoStore = require('./memostore.js');   // imports our unique txn classes
 
 var base_fee = 200 * 10e6;
 
@@ -56,9 +56,12 @@ ws.on('open', function() {
 });
 
 ////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////
-/* THE GOOD STUFF */
-////////////////////////////////////////////////////////////
+/* THE GOOD STUFF
+
+this is where we'll receive the msgs from the ledger
+  and parse them for storage or ignoring
+
+*/
 ////////////////////////////////////////////////////////////
 
 ws.on('message', function(msg) {
@@ -68,24 +71,17 @@ ws.on('message', function(msg) {
 
 	if (isValidTxn(msg_json)) {
 
-	// var memoObj = new classes.Memo(msg_json.transaction.Memos[0].Memo);
-		// ergo, we should store a msg_type at the root of the memoObj for fast if/else reference
-
-    // console.log('its a valid txn');
-
-    var memoObj = new db.Memo(msg_json);
-    if ( memoObj.memotype === 'wufi') {
-
+    var memoObj = new memoStore.Memo(msg_json);
+    if ( memoObj.memoType === 'wufi') {
       // console.log('its of memotype wufi');
       // console.log('memoobj looks like this: ' + JSON.stringify(memoObj));
-
-      /* ///////////////////////////
+      /*
       // if this is a basic STR txn... (this will go away later)
 
-       if (msg_json.transaction.TransactionType === 'Payment') {
-       var txn = new classes.BasicSTRTransaction(msg_json);
-       insertTxn(txn);
-       }
+      if (msg_json.transaction.TransactionType === 'Payment') {
+        var txn = new classes.BasicSTRTransaction(msg_json);
+        insertTxn(txn);
+      }
        */
 
       /////////////////////////////
@@ -93,15 +89,11 @@ ws.on('message', function(msg) {
       // if (memoObj.memodata.type === 'user')
         // if Users.find({ _id: msg_json.transaction.Account })
           // FOLLOW UPDATE PROTOCOL":
-          /*
-
-           */
-
         // else
           // FOLLOW CREATE PROTOCOL:
-          /*
 
-           */
+      // USERINFO implementation
+      /*
       if (memoObj.memodata.type === 'user') {
         // console.log('its of memodata type user');
 
@@ -111,11 +103,11 @@ ws.on('message', function(msg) {
 
         if (txAmount === 5 * base_fee) {
           // 5 * base_fee signifies username registration == new public user
-          info = new db.UserInfo(msg_json, memoObj).createUserInfo();
+          info = new memoStore.UserInfo(msg_json, memoObj).createUserInfo();
           ddp.setUserInfo('insertUserInfo', info);
 
         } else if (txAmount === base_fee * .5) {
-          info = new db.UserInfo(msg_json, memoObj).updateUserInfo();
+          info = new memoStore.UserInfo(msg_json, memoObj).updateUserInfo();
 
           // TODO: FINALIZE MEMOS so you can IF TEST the RIGHT METEOR METHODS
             // if test against the userInfo types (payment, profile, etc)
@@ -125,6 +117,14 @@ ws.on('message', function(msg) {
           }
         }
       }
+      */
+
+      if (memoObj.memoData.type === 'post') {
+
+        var post = new memoStore.Post(msg, memoObj);
+        ddp.insertPost(post);
+
+      }
     }
 	}
 
@@ -132,8 +132,8 @@ ws.on('message', function(msg) {
 
 function isValidTxn(msg_json) {
   return msg_json.hasOwnProperty('transaction') &&
-    msg_json.status === 'closed' &&   // msg_json.validated ???
-    msg_json.engine_result === 'tesSUCCESS';
+    // msg_json.status === 'closed' &&   // msg_json.validated ???
+    msg_json.meta.TransactionResult === 'tesSUCCESS';
 }
 
 
@@ -141,7 +141,7 @@ function isValidTxn(msg_json) {
 /////////////////////////////////////////////////////
 
 // closes the local stellard ledger every `timeout` ms
-var timeout = 10000;
+var timeout = 30000;
 if (network_name === 'local') {
 	(function (interval) {
 		var Remote = stellar.Remote;

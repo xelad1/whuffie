@@ -6,45 +6,80 @@
 
 <body>
 
-  {{> mainMenu}}
+  {{> header}}
 
-  <div>
-    Main Page
-  </div>
+  {{> menuSlider}}
 
-  {{> tabMenu}}
+  {{> shareModal}}
 
 </body>
 
 
-<template name="mainMenu">
-  <div class="ui compact menu">
-    <a class="item">Home</a>
-    <a class="item">Inbox</a>
+<template name="header">
+  <div class="ui menu">
+    <a class="item"><i class="reorder icon menu-slider-button"></i></a>
+    <a class="center item">Wufi</a>
+    <div class="right menu">
+      <a class="item"><i class="won icon share-modal-button"></i></a>
+    </div>
   </div>
 </template>
 
-<template name="tabMenu">
-  <div class="ui pointing secondary demo menu">
-    <a class="active red item" data-tab="first">First Tab</a>
-    <a class="blue item" data-tab="second">Second Tab</a>
-    <a class="green item" data-tab="third">Third Tab</a>
+<template name="menuSlider" id="menuSliderTemplate">
+  <div class="ui red vertical floating very thin left sidebar" id="menuSlider">
+    <a class="item">
+      <i class="huge home icon"></i>
+    </a>
+    <a class="active item">
+      <i class="huge heart icon"></i>
+    </a>
+    <a class="item">
+      <i class="huge facebook icon"></i>
+    </a>
   </div>
-
-  {{> firstTab}}
-  {{> secondTab}}
-  {{> thirdTab}}
-
 </template>
 
-<template name="firstTab">
-  <div class="ui active tab segment" data-tab="first">First text</div>
-</template>
+<template name="shareModal" id="shareModalTemplate">
+  <div class="ui modal" id="shareModal">
 
-<template name="secondTab">
-  <div class="ui tab segment" data-tab="second">Second text</div>
-</template>
+    <div class="header">
+      Share/Nix Wufi
+    </div>
 
-<template name="thirdTab">
-  <div class="ui tab segment" data-tab="third">Third text</div>
+    <div class="content">
+      <div class="ui large form white segment error" id="simpleShareModalForm">
+        <div class="field">
+          <div class="ui input focus">
+            <input type="text" placeholder="Username" id="simpleShareModalUsername"/>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="ui left icon input focus">
+            <i class="inverted won icon"></i>
+            <input type="text" placeholder="Amount in Wufi" id="simpleShareModalAmount"/>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="ui input">
+            <textarea name="" id="simpleShareModalMessage" cols="30" rows="3" placeholder="Message"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <div class="ui two fluid buttons">
+        <div class="ui negative button">
+          <i class="remove icon"></i>
+          Discard
+        </div>
+        <div class="ui positive right button">
+          Share
+          <i class="checkmark icon"></i>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>

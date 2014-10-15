@@ -6,6 +6,10 @@ Meteor.methods({
 		Transactions.insert(txn);
 	},
 
+  'addPost': function(post) {
+    Posts.insert(post);
+  },
+
   'insertUserInfo': function(userInfo) {
     UsersPublic.insert(userInfo);
   },
@@ -27,9 +31,6 @@ Meteor.methods({
   }
    */
 
-
-
-
   // discussion on server holding keys vs not
     // almost COMPLETELY NON-SENSICAL AND USELESS
     // b/c server can't call client if client isnt on page/logged in:
@@ -46,7 +47,7 @@ Meteor.methods({
     2. define Meteor.clientMethod for sharing/nixing wufi
       >> we can define share limits that would otherwise need 2FA
       >> this could also get the
-    3. ON BUTTON PRESSES, user simply shares
+    3. w/in the wufi app, user simply shares
     4. WHEN AUTHENTICATED ON ANOTHER SERVICE (e.g. logged in wufi and tw w/ tw)
       >> 'pay with wufi' / share-walls
         - click a button to pay/share
