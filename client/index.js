@@ -9,7 +9,7 @@ Template.shareModal.rendered = function() {
   // sets up the simple shareModal validation
   // this will run against
   $('#simpleShareModalForm')
-    .form(simpleShareModalForm_validationRules, {
+    .form(validationRules.simpleShareModalForm, {
       inline: true,
       on: 'blur'
     });
@@ -22,7 +22,9 @@ Template.header.events({
     $('#menuSlider').sidebar('toggle');
   },
 
-  "click .share-modal-button" : function() {
+  "click .share-modal-button" : function(e, template) {
+    e.preventDefault();
+
     $('#shareModal')
       .modal('setting', {
         closable: true,
@@ -111,5 +113,44 @@ var submitShareTxnFromForm = function(event, template) {
 */
 
 /////////////////////////////////
-// these are validation funcs
+/*
+these are the validation rules
+  theyre called in the event handlers per context (simple share, comment share, etc)
+  strictly UI based, since a malicious user can do what they want regardless of UI and a benevolent user won't try it
+
+*/
+
 /////////////////////////////////
+var validationRules = {};
+
+validationRules.simpleShareModalForm = {
+  username: {
+    identifier: 'simpleShareModalUsername',
+    rules: [
+      {
+        type: 'empty',
+        prompt: 'Please enter a username'
+      }
+    ]
+  },
+
+  amount: {
+    identifier: 'simpleShareModalAmount',
+    rules: [
+      {
+        type: 'empty',
+        prompt: 'Please enter an amount to share'
+      }
+    ]
+  },
+
+  message: {
+    identifier: 'simpleShareModalMessage',
+    rules: [
+      {
+        type: 'maxLength[200]',
+        prompt: 'Please keep your message under 200 characters'
+      }
+    ]
+  }
+};
