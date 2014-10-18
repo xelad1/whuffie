@@ -16,6 +16,25 @@ Template.shareModal.rendered = function() {
 };
 
 // CONTROLLER EVENTS (these manipulate data and models based on user input)
+
+Template.shareModal.events({
+  /*
+  "click .checkmark.icon" : function(e, t) {
+
+    console.log('clicked modal approve btn');
+
+    var rcvr = t.find('#simpleShareModalUsername').val();
+    var amt = t.find('#simpleShareModalAmount').val();
+    var msg = t.find('#simpleShareModalMessage').val();
+
+    var memoObj = new Memo(msg);
+
+    submitTxn(amt, 'STR', testRcvrAddr, memoObj);
+  }
+  */
+
+});
+
 Template.header.events({
 
   "click .menu-slider-button" : function() {
@@ -49,6 +68,30 @@ Template.header.events({
               creation
               submission
               animation?
+          */
+
+
+          console.log('clicked modal approve btn');
+
+          var rcvr = $('#simpleShareModalUsername').val();
+          var amt = $('#simpleShareModalAmount').val();
+          var msg = $('#simpleShareModalMessage').val();
+
+          var memoObj = new Memo(msg).getMemo();
+          console.log('memoObj looks like', JSON.stringify(memoObj));
+
+          submitTxn(amt, 'STR', testRcvrAddr, memoObj);
+
+          /*
+          var tx = new StellarTransaction(rcvr, amt, memoObj);
+
+          tx.submit(function(err, res) {
+            if (err) {
+              console.log('there was an error sending the txn from modal ', err);
+            } else {
+              console.log('sent txn from modal ', res);
+            }
+          });
           */
 
           return true;
@@ -121,6 +164,7 @@ these are the validation rules
 */
 
 /////////////////////////////////
+// these rules are used (optionally) by semantic-ui's forms
 var validationRules = {};
 
 validationRules.simpleShareModalForm = {

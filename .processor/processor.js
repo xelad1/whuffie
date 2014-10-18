@@ -141,7 +141,7 @@ function isValidTxn(msg_json) {
 /////////////////////////////////////////////////////
 
 // closes the local stellard ledger every `timeout` ms
-var timeout = 30000;
+var timeout = 15000;
 if (network_name === 'local') {
 	(function (interval) {
 		var Remote = stellar.Remote;
