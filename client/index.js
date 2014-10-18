@@ -59,9 +59,6 @@ Template.header.events({
               animation?
           */
 
-
-          console.log('clicked modal approve btn');
-
           var rcvr = $('#simpleShareModalUsername').val();
           var amt = $('#simpleShareModalAmount').val();
           var msg = $('#simpleShareModalMessage').val();

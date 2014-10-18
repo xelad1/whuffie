@@ -11,5 +11,5 @@ Thumbs.db
 dist
 .tmp
 .lock
-packages/
-public/bower_components/
+public/
+build/
