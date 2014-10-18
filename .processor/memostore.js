@@ -21,8 +21,6 @@ function Memo(msg) {
   // later, when bundled into a lib, this will be a func w/in the Memo class
 
   var memo = msg.transaction.Memos[0].Memo;
-  console.log('msg looks like this:', JSON.stringify(msg));
-  console.log('memo looks like this:', JSON.stringify(memo));
   // as of wufi-schema v0.1, memoType will always be 'wufi'
   this.memoType = JSON.parse(utils.hexToString(memo.MemoType));
   this.memoData = JSON.parse(utils.hexToString(memo.MemoData));

@@ -19,18 +19,7 @@ Template.shareModal.rendered = function() {
 
 Template.shareModal.events({
   /*
-  "click .checkmark.icon" : function(e, t) {
-
-    console.log('clicked modal approve btn');
-
-    var rcvr = t.find('#simpleShareModalUsername').val();
-    var amt = t.find('#simpleShareModalAmount').val();
-    var msg = t.find('#simpleShareModalMessage').val();
-
-    var memoObj = new Memo(msg);
-
-    submitTxn(amt, 'STR', testRcvrAddr, memoObj);
-  }
+  "click .checkmark.icon" : better place for shareModal send txn??
   */
 
 });
@@ -41,7 +30,7 @@ Template.header.events({
     $('#menuSlider').sidebar('toggle');
   },
 
-  "click .share-modal-button" : function(e, template) {
+  "click .share-modal-button" : function(e) {
     e.preventDefault();
 
     $('#shareModal')
@@ -78,9 +67,19 @@ Template.header.events({
           var msg = $('#simpleShareModalMessage').val();
 
           var memoObj = new Memo(msg).getMemo();
-          console.log('memoObj looks like', JSON.stringify(memoObj));
 
-          submitTxn(amt, 'STR', testRcvrAddr, memoObj);
+          var btn = $('.checkmark.icon');
+          btn.removeClass('checkmark').addClass('loading');
+
+          submitTxn(amt, 'STR', testRcvrAddr, memoObj, function(err, res) {
+            if (err) {
+              console.log('there was an error sending the txn from modal ', err);
+            } else {
+              console.log('sent txn from modal');
+              btn.removeClass('loading').addClass('checkmark');
+              remote.disconnect();
+            }
+          });
 
           /*
           var tx = new StellarTransaction(rcvr, amt, memoObj);
@@ -93,8 +92,6 @@ Template.header.events({
             }
           });
           */
-
-          return true;
 
         }
       })
