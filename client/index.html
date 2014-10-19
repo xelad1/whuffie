@@ -14,6 +14,8 @@
 
   {{> shareModal}}
 
+  {{> appGrid}}
+
 </body>
 
 
@@ -21,9 +23,6 @@
   <div class="ui menu">
     <a class="item"><i class="reorder icon menu-slider-button"></i></a>
     <a class="center item">Wufi</a>
-    <div class="right menu">
-      <a class="item"><i class="won icon share-modal-button"></i></a>
-    </div>
   </div>
 </template>
 
@@ -84,6 +83,34 @@
       </div>
     </div>
   </div>
+</template>
+
+<template name="appGrid">
+
+  <div class="ui three column grid">
+    <div class="row">
+
+      <div class="column app">
+        <a href="">
+          <i class="won icon share-modal-button"></i>
+        </a>
+      </div>
+
+      <div class="column app">
+        <a href="">
+          <i class="won icon share-modal-button"></i>
+        </a>
+      </div>
+
+      <div class="column app">
+        <a href="">
+          <i class="won icon share-modal-button"></i>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
 </template>
 
 <template name="posts">

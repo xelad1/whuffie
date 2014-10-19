@@ -24,13 +24,9 @@ Template.shareModal.events({
 
 });
 
-Template.header.events({
+Template.appGrid.events({
 
-  "click .menu-slider-button" : function() {
-    $('#menuSlider').sidebar('toggle');
-  },
-
-  "click .share-modal-button" : function(e) {
+  "click .app" : function(e) {
     e.preventDefault();
 
     $('#shareModal')
@@ -41,13 +37,13 @@ Template.header.events({
         },
         onApprove: function() {
           /*
-          the submit-txn button needs to trigger the following:
-          - get data from form fields
-          - a client-side (UI) check of the data being typed in
-          -
-          - a creation of the memoObj
-          - a creation and submission of the txn to the ledger
-          - an animation showing the process proceeding and one upon completion/failure
+           the submit-txn button needs to trigger the following:
+            - get data from form fields
+            - a client-side (UI) check of the data being typed in
+            -
+            - a creation of the memoObj
+            - a creation and submission of the txn to the ledger
+            - an animation showing the process proceeding and one upon completion/failure
 
           therefore,
             which parts need to be bundled in a class?
@@ -94,7 +90,13 @@ Template.header.events({
       })
       .modal('show');
   }
+})
 
+Template.header.events({
+
+  "click .menu-slider-button" : function() {
+    $('#menuSlider').sidebar('toggle');
+  }
 
 });
 
