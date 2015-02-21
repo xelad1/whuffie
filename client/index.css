@@ -1,7 +1,7 @@
-#menuSlider .item {
-    display: block;
+body {
+    background-color: #5D5C5D;
 }
 
-.icon {
-    margin: 0 auto;
+#menuSlider .item {
+    display: block;
 }
