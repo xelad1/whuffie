@@ -23,7 +23,7 @@ stellardCxnInterval = function() {
 };
 
 
-var submitGenericTransaction = function(currencyCode, txnType, amt, rcvrAddr, options, memoObj, preSubmitCallback, submitCallback) {
+var submitGenericTransaction = function(currencyCode, txnType, amt, rcvrAddr, options, memoObj, preSubmitCallback, postSubmitCallback) {
   if (typeof amt !== 'number' || currencyCode.length > 3) {
     return;
   }
@@ -33,8 +33,8 @@ var submitGenericTransaction = function(currencyCode, txnType, amt, rcvrAddr, op
   preSubmitCallback = preSubmitCallback || function() {
     console.log('running default preSubmitCallback');
   };
-  submitCallback = submitCallback || function(err, res) { 
-    console.log('running default callback, err/res are:', err, res); 
+  postSubmitCallback = postSubmitCallback || function(err, res) { 
+    console.log('running default postSubmitCallback, err/res are:', err, res);
   };
 
   var amtNum = Amount.from_human(amt + currencyCode);
@@ -58,7 +58,7 @@ var submitGenericTransaction = function(currencyCode, txnType, amt, rcvrAddr, op
 
   preSubmitCallback();
   tx.submit(function (err, res) {
-    submitCallback(err, res);
+    postSubmitCallback(err, res);
   });
 };
 
