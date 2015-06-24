@@ -8,7 +8,8 @@ isValidTxn = function(msg) {
 
 messageHandler = {
   paymentHandler: function(msg_json) {
-    console.log('[PROCESSOR] received [payment] message from txn network');
+    //console.log('[PROCESSOR] received [payment] message from txn network');
+    return;
   },
 
   trustHandler: function(msg_json) {
@@ -16,16 +17,19 @@ messageHandler = {
     var targetAddr = msg_json.transaction.LimitAmount.issuer;
     var newLimit = parseFloat(msg_json.transaction.LimitAmount.value);
 
-    if (msg_json.transaction.LimitAmount.currency !== 'WFI') { 
-      return; 
+    if (msg_json.transaction.LimitAmount.currency !== 'WFI') {
+      return;
     }
     console.log('[PROCESSOR] received [gifting] message from txn network');
 
-    neoOperations.upsertEdge(sourceAddr, targetAddr, 
-      newLimit, function(err, res) {
-      // console.log('meta.AffectedNodes:', msg_json.meta.AffectedNodes);
-      mongoOperations.insertTxn(sourceAddr, targetAddr, newLimit, res, msg_json);
+    neoOperations.upsertEdge(sourceAddr, targetAddr, newLimit,
+      function(err, res) {
+        // //console.log('meta.AffectedNodes:', msg_json.meta.AffectedNodes);
+        Fiber(function() {
+          mongoOperations.insertTxn(sourceAddr, targetAddr, newLimit, res, msg_json);
+        });
     });
+
   }
 };
 

@@ -3,9 +3,13 @@ Meteor.methods({
   'maxFlow': helpers.maxFlowBetweenAccounts
 });
 
+mongoOperations = {
+	insertTxn: insertTransaction
+};
+
 function addProduct(product) {}
 
-var insertTransaction = function(sourceAddr, targetAddr, newLimit, neoOpResult, msg_json) {
+function insertTransaction(sourceAddr, targetAddr, newLimit, neoOpResult, msg_json) {
 	// TODO: REFACTOR; normalize db by storing txns in
 		// Transaction table with references stored
 		// in sourceUser and targetUser documents
@@ -15,11 +19,11 @@ var insertTransaction = function(sourceAddr, targetAddr, newLimit, neoOpResult, 
 	var sourceUsername = sourceUser.username;
 	var targetUsername = targetUser.username;
 
-	var currentLimit = neoOpResult[0].limit._data.data.prevAmount
+	var currentLimit = neoOpResult[0].limit._data.data.prevAmount;
 
 	// parse memo from txn
 	// TODO: refactor to handle more complicated memoData schemas
-	var memoObj = Memo.parseMemo(msg_json);
+	//var memoObj = Memo.parseMemo(msg_json);
 
 	// update both user's arrays of related gifting/nixing txns
 	Meteor.users.update({
@@ -28,7 +32,7 @@ var insertTransaction = function(sourceAddr, targetAddr, newLimit, neoOpResult, 
 		$push: {
 			transactions: {
 				targetUsername: targetUsername,
-				message: memoObj.memoData,
+				//message: memoObj.memoData,
 				limitChange: newLimit - currentLimit,
 				ledger_index: msg_json.ledger_index,
 				txnHash: msg_json.transaction.hash,
@@ -43,7 +47,7 @@ var insertTransaction = function(sourceAddr, targetAddr, newLimit, neoOpResult, 
 		$push: {
 			receivedTransactions: {
 				sourceUsername: sourceUsername,
-				message: memoObj.memoData,
+				//message: memoObj.memoData,
 				limitChange: newLimit - currentLimit,
 				ledger_index: msg_json.ledger_index,
 				txnHash: msg_json.transaction.hash,
@@ -51,8 +55,4 @@ var insertTransaction = function(sourceAddr, targetAddr, newLimit, neoOpResult, 
 			}
 		}
 	});
-};
-
-mongoOperations = {
-	insertTxn: insertTransaction
-};
+}

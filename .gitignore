@@ -29,3 +29,7 @@ testGraph.json
 # extra packages #
 ##################
 packages/meteor-reactjs/
+
+# etc #
+#######
+NOTES.md

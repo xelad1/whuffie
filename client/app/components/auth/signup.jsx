@@ -34,6 +34,7 @@ SignUp = React.createClass({
       if (err) {
         console.log('error in creating user:', err);
       } else {
+        console.log('successfully created user');
         setStellarSession();
       }
     });

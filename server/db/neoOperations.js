@@ -11,27 +11,27 @@ Meteor.neo4j.methods({
    */
 });
 
-var createUser = function(user, callback) {
+neoOperations = {
+  createUser: createUser,
+  upsertEdge: upsertEdge
+};
+
+function createUser(user, callback) {
   // saves:
   // user.id, username and stellar address
   var query = 'CREATE (:User {_id: {_id}, ' + 
     'username: {username}, ' + 
     'address: {address}})';
 
-  //return neoQuerySync(query, null);
   neoQuery(query, {
     _id: user._id,
     username: user.username,
     address: user.profile.stellar.account_id
-  }, function(err, res) {
-    Fiber(function() {
-      callback(err, res);
-    }).run();
-  });
-};
+  }, callback);
+}
 
-var upsertEdge = function(sourceAddr, targetAddr, limit, callback) {
-  var query = 'MATCH (s {address: {sourceAddr}}), ' + 
+function upsertEdge(sourceAddr, targetAddr, limit, callback) {
+  var query = 'MATCH (s {address: {sourceAddr}}), ' +
     '(t {address: {targetAddr}}) ' +
     'MERGE (s)-[limit:TRUST]->(t) ' +
     'ON MATCH SET limit.prevAmount = limit.amount, ' +
@@ -46,14 +46,5 @@ var upsertEdge = function(sourceAddr, targetAddr, limit, callback) {
     amount: limit,
     sourceAddr: sourceAddr,
     targetAddr: targetAddr
-  }, function(err, res) {
-    Fiber(function() {
-      callback(err, res);
-    }).run();
-  });
-};
-
-neoOperations = {
-  createUser: createUser,
-  upsertEdge: upsertEdge
+  }, callback);
 }

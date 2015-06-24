@@ -36,20 +36,14 @@ ws.on('message', function(msg) {
     return;
   }
 
-  // BEGIN message handlers
-  //if (memoObj.memoData.type === 'post') {
-  //  console.log('msg looks like:', memoObj);
-  //  //var post = new memoStore.Post(msg, memoObj);
-  //}
-
   if (msg_json.transaction.TransactionType === 'Payment') {
     // handle only payment of WFI
     messageHandler.paymentHandler(msg_json);
-    return;
+    //return;
   } else if (msg_json.transaction.TransactionType === 'TrustSet') {
     // handles only trustSets denominated in WFI
     messageHandler.trustHandler(msg_json);
-    return;
+    //return;
   }
 
 });
@@ -57,6 +51,7 @@ ws.on('message', function(msg) {
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
 
+/* TESTNET ONLY */
 // closes the local stellard ledger every `timeout` ms
 var timeout = 15000;
 if (stellardCxn.name === 'local') {
