@@ -41,6 +41,6 @@ function demoRegistrationHook(options, user) {
   user.transactions = [];
   user.receivedTransactions = [];
 
-  neoOperations.createUser(user, Meteor.bindEnvironment( function(){}));
+  neoOperations.createUser(user, function(){});
   return user;
 }
