@@ -10,7 +10,8 @@ Package.onUse(function (api) {
 
   api.use([
     'accounts-base',
-    'meteorhacks:npm'
+    'meteorhacks:npm',
+    'aldeed:collection2@2.3.3'
   ], ['client', 'server']);
 
   Npm.depends({
@@ -18,6 +19,12 @@ Package.onUse(function (api) {
   });
 
   api.addFiles([
-    'lib/server/auth.js'
+    'lib/collections.js'
+  ], ['client', 'server']);
+
+  api.addFiles([
+    'lib/server/auth.js',
+    'lib/server/publications.js',
+    'lib/server/setup.js'
   ], ['server']);
 });
