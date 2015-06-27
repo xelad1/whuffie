@@ -1,5 +1,5 @@
 setStellarSession = function() {
-  if (!Meteor.user()) { return; }
+  //if (!Meteor.user()) { return; }
   // var user = Meteor.user();
   var addr = Meteor.user().profile.stellar.account_id;
   var skey = Meteor.user().profile.stellar.master_seed;
@@ -22,7 +22,18 @@ stellardCxnInterval = function() {
   }
 };
 
-
+/**
+ * Convenience function for submitting transactions
+ *
+ * @param currencyCode {string}
+ * @param txnType {string} - either 'payment' or 'trustSet'
+ * @param amt {number} - Absolute sum to pay or to set trust
+ * @param rcvrAddr {string}
+ * @param options
+ * @param memoObj
+ * @param preSubmitCallback {function}
+ * @param postSubmitCallback {function}
+ */
 var submitGenericTransaction = function(currencyCode, txnType, amt, rcvrAddr, options, memoObj, preSubmitCallback, postSubmitCallback) {
   if (typeof amt !== 'number' || currencyCode.length > 3) {
     return;
@@ -31,11 +42,11 @@ var submitGenericTransaction = function(currencyCode, txnType, amt, rcvrAddr, op
   options = options || null;
   memoObj = memoObj || {};
   preSubmitCallback = preSubmitCallback || function() {
-    console.log('running default preSubmitCallback');
-  };
-  postSubmitCallback = postSubmitCallback || function(err, res) { 
-    console.log('running default postSubmitCallback, err/res are:', err, res);
-  };
+      console.log('running default preSubmitCallback');
+    };
+  postSubmitCallback = postSubmitCallback || function(err, res) {
+      console.log('running default postSubmitCallback, err/res are:', err, res);
+    };
 
   var amtNum = Amount.from_human(amt + currencyCode);
   var tx = remote.transaction();
@@ -60,13 +71,6 @@ var submitGenericTransaction = function(currencyCode, txnType, amt, rcvrAddr, op
   tx.submit(function (err, res) {
     postSubmitCallback(err, res);
   });
-};
-
-retrieveAccountInfo = function(addr, callback) {
-  callback = callback || function(err, res) {
-    console.log('default accountInfo callback, err/res are:', err, res);
-  }
-  remote.request_account_info(addr, callback);
 };
 
 submitSTRTransaction = submitGenericTransaction.bind(null, 'STR', 'payment');
