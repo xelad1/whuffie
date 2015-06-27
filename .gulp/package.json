@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/sunny-g/wufi",
   "dependencies": {
-    "stellar-lib": "^0.10.x"
+    "stellar-lib": "^0.10.3"
   }
 }
