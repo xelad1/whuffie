@@ -1,9 +1,10 @@
-// collections.js
 /*
-	contains: 
-		additional collections (e.g. Products) 
+	contains:
+		additional collections (e.g. Products)
 		Mongo-stored Neo4j collections
  */
+
+Sellables = new Meteor.Collection('sellables');
 
 neoDB = {
 	// Meteor.neo4j.query returns a reactive Object 
@@ -13,6 +14,3 @@ neoDB = {
 	Users: Meteor.neo4j.collection('users')
   //Limits: Meteor.neo4j.query('MATCH ()-[limit:TRUST]->() WHERE limit.amount > 0 RETURN limit')
 };
-
-// Products = new Meteor.Collection('products');
-// Transactions = new Meteor.Collection('transactions');

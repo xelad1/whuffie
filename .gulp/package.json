@@ -18,5 +18,13 @@
   "homepage": "https://github.com/sunny-g/wufi",
   "dependencies": {
     "stellar-lib": "^0.10.3"
+  },
+  "devDependencies": {
+    "browserify": "8.1.1",
+    "gulp": "^3.8.11",
+    "gulp-streamify": "0.0.5",
+    "gulp-uglify": "^1.1.0",
+    "reactify": "^1.0.0",
+    "vinyl-source-stream": "^1.0.0"
   }
 }
