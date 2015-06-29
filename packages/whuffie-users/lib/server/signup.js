@@ -1,6 +1,6 @@
 var request = Meteor.npmRequire('request');
 
-Accounts.onCreateUser(demoRegistrationHook);
+Accounts.onCreateUser(testnetRegistrationHook);
 
 /*
  This function will:
@@ -17,13 +17,15 @@ Accounts.onCreateUser(demoRegistrationHook);
  memo in a transaction sent immediately on signup.
  */
 
+// TODO: Meteor.wrapAsync?
 var postSync = Async.wrap(request.post);
 var getSync = Async.wrap(request.get);
-var getTestStellar = function(stellarAccount) {
-  return getFreeStellar ? getSync({url: 'https://api-stg.stellar.org/friendbot?address=' + stellarAccount.account_id}) : null;
-};
 
-function demoRegistrationHook(options, user) {
+function getTestStellar(stellarAccount) {
+  return getFreeStellar ? getSync({url: 'https://api-stg.stellar.org/friendbot?address=' + stellarAccount.account_id}) : null;
+}
+
+function testnetRegistrationHook(options, user) {
   console.log('running registration hook');
 
   // have stellard create us a wallet full of stellar keys and seeds
@@ -31,6 +33,8 @@ function demoRegistrationHook(options, user) {
 
   var stellarAccount = JSON.parse(res.body).result;
   delete stellarAccount.status;
+  stellarAccount.address = stellarAccount.account_id;
+  delete stellarAccount.account_id;
 
   // get free testnet stellar from SDF
   var getRes = getTestStellar(stellarAccount);
@@ -38,8 +42,6 @@ function demoRegistrationHook(options, user) {
   user.profile = options.profile || {};
   // TODO: encrypt stellar data before storage
   user.profile.stellar = stellarAccount;
-  user.transactions = [];
-  user.receivedTransactions = [];
 
   neoOperations.createUser(user, function(){});
   return user;

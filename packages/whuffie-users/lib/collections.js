@@ -1,5 +1,5 @@
 /**
- *
+ * Schema for Whuffie profiles
  * @type {SimpleSchema}
  */
 UserWhuffieProfileSchema = new SimpleSchema({
@@ -16,12 +16,13 @@ UserWhuffieProfileSchema = new SimpleSchema({
 });
 
 /**
- * Schema for Stellar profile schemas
- * TODO: make secure by storing ONLY address, public_key, and public_key_hex
+ * Schema for Stellar profiles
  * @type {SimpleSchema}
+ * TODO: make server-secure by storing ONLY address, public_key, and public_key_hex
+ * TODO: store stellar-wallet blob (w/ password reset bells and whistles)
  */
 UserStellarProfileSchema = new SimpleSchema({
-  account_id: {
+  address: {
     type: String,
     //regEx:  // make it length 34 and base58 or whatever
     label: 'Stellar Address',
@@ -50,18 +51,6 @@ UserStellarProfileSchema = new SimpleSchema({
  * @type {SimpleSchema}
  */
 UserSchema = new SimpleSchema({
-  /**
-   * Username
-   * @type {String}, between 3 and 15 chars
-   */
-  username: {
-    type: String,
-    regEx: /^[a-z0-9A-Z_]{3,15}$/,
-    label: 'Username',
-    index: true,
-    optional: false
-  },
-
   profile: {
     type: Object,
     optional: false
@@ -77,9 +66,8 @@ UserSchema = new SimpleSchema({
     type: UserStellarProfileSchema,
     label: 'Stellar Profile',
     optional: false
-  },
+  }
 
-  /*
-  TODO: store stellar wallet blob
-   */
 });
+
+Meteor.users.attachSchema(UserSchema);

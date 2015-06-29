@@ -19,13 +19,12 @@ Package.onUse(function (api) {
   });
 
   api.addFiles([
+    'lib/server/signup.js',
+    'lib/server/publications.js'
+  ], ['server']);
+
+  api.addFiles([
     'lib/collections.js',
     'lib/helpers.js'
   ], ['client', 'server']);
-
-  api.addFiles([
-    'lib/server/auth.js',
-    'lib/server/publications.js',
-    'lib/server/setup.js'
-  ], ['server']);
 });
