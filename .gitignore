@@ -5,6 +5,7 @@
 # Project Files #
 #################
 packages/npm-container/.npm/
+packages/sunnyg:meteor-famous-ui-components/
 
 # Gulp-built files #
 ####################
