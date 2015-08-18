@@ -5,9 +5,10 @@
 Cards = new Meteor.Collection('cards');
 
 /**
- * Schema for comments in comment threads
+ * Schema for comments in comment threads (can be modelled after reddit/hn-style comments)
  * @type {SimpleSchema}
  */
+// TODO: break out comments to their own package, keep a reference in Card
 CommentSchema = new SimpleSchema({
   // TODO: include some way of gifting/nixing within comments
 
@@ -15,7 +16,11 @@ CommentSchema = new SimpleSchema({
   authorUsername: {
     type: String,
     label: 'Comment Author Username',
-    optional: false
+    optional: true
+  },
+
+  authorId: {
+    type: String
   },
 
   commentMessage: {
@@ -23,8 +28,15 @@ CommentSchema = new SimpleSchema({
     label: 'Comment Message',
     min: 1,
     max: 500,
-    optional: false
+    optional: true
   }
+
+  /*
+  replies: {
+    type: [CommentSchema],
+    optional: true
+  }
+   */
 });
 
 /**
@@ -33,14 +45,27 @@ CommentSchema = new SimpleSchema({
  * TODO: which user info should be included and indexed?
  * TODO: when complete, set `optional` to false for appropriate fields
  */
-CardSchema = new SimpleSchema({
+Cards.schema = new SimpleSchema({
+  _id: {
+    type: String,
+    optional: true
+  },
+
   sourceUserAddress: {
     type: String,
     label: 'Source User Address',
     optional: true
   },
 
-  //sourceUsername: {},
+  sourceUsername: {
+    type: String,
+    label: 'Source Username',
+    optional: true
+  },
+
+  sourceUserId: {
+    type: String
+  },
 
   targetUserAddress: {
     type: String,
@@ -48,11 +73,19 @@ CardSchema = new SimpleSchema({
     optional: true
   },
 
-  //targetUsername: {}
+  targetUsername: {
+    type: String,
+    label: 'Target Username',
+    optional: true
+  },
+
+  targetUserId: {
+    type: String
+  },
 
   cardMessage: {
     type: String,
-    label: 'Gift Message',
+    label: 'Card Message',
     max: 140,
     optional: true
   },
@@ -81,7 +114,13 @@ CardSchema = new SimpleSchema({
     optional: true
   },
 
-  ledgerVerified: {
+  isDeleted: {
+    type: Boolean,
+    defaultValue: false,
+    optional: true
+  },
+
+  isVerified: {
     type: Boolean,
     defaultValue: false,
     optional: true
@@ -93,4 +132,4 @@ CardSchema = new SimpleSchema({
   }
 });
 
-Cards.attachSchema(CardSchema);
+Cards.attachSchema(Cards.schema);

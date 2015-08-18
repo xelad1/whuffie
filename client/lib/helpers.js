@@ -1,7 +1,7 @@
 setStellarSession = function() {
-  //if (!Meteor.user()) { return; }
+  if (!Meteor.user()) { return; }
   // var user = Meteor.user();
-  var addr = Meteor.user().profile.stellar.account_id;
+  var addr = Meteor.user().profile.stellar.address;
   var skey = Meteor.user().profile.stellar.master_seed;
   Session.set('myAddr', addr);
   Session.set('mySecret', skey);

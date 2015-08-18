@@ -1,3 +1,4 @@
+// TODO: replace request npm module with HTTP package
 var request = Meteor.npmRequire('request');
 
 Accounts.onCreateUser(testnetRegistrationHook);

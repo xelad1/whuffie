@@ -5,5 +5,25 @@ Meteor.N4JDB = new Meteor.Neo4j('http://localhost:7474');
 
 // GLOBAL
 // wrappers for query functions
-neoQuery = Meteor.N4JDB.query;
-neoQuerySync = Meteor.wrapAsync(Meteor.N4JDB.query, Meteor.N4JDB);
+//neoQuery = Meteor.N4JDB.query;
+neoQuery = Meteor.neo4j.query;
+// neoQuerySync = Meteor.wrapAsync(Meteor.N4JDB.query, Meteor.N4JDB);
+neoQuerySync = Meteor.wrapAsync(Meteor.neo4j.query, Meteor.neo4j);
+
+/*
+neoQuerySync = function(query, options) {
+  Future = Npm.require('fibers/future');
+  var myFuture = new Future();
+  
+  // call the function and store its result
+  Meteor.N4JDB(query, options, function (error, results){
+    if (error){
+      myFuture.throw(error);
+    } else {
+      myFuture.return(results);
+    }
+  });
+
+  return myFuture.wait();
+}
+ */

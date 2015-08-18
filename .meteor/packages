@@ -14,9 +14,10 @@ accounts-password
 ostrio:neo4jreactivity
 meteorhacks:npm
 
-
 npm-container
-hipertracker:reactjs
 nooitaf:colors
 whuffie:whuffie-cards
 whuffie:whuffie-users
+sunnyg:meteor-famous-ui-components
+whuffie:whuffie-identities
+deanius:promise

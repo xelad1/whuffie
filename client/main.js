@@ -20,7 +20,6 @@ remote = new Remote({
 // connect to stellard, sets session vars to Stellar stuff,
 // keep stellard cxn alive
 remote.connect();
-setStellarSession();
 Meteor.setInterval(stellardCxnInterval, 10000);
 
 testLogin = function(username) {

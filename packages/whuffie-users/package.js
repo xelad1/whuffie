@@ -1,6 +1,6 @@
 Package.describe({
   name: "whuffie:whuffie-users",
-  summary: "Authentication for Whuffie",
+  summary: "Authentication for Whuffie.",
   version: "0.0.1",
   git: "https://github.com/sunny-g/whuffie"
 });
@@ -9,9 +9,13 @@ Package.onUse(function (api) {
   api.versionsFrom(['METEOR@1.0']);
 
   api.use([
+    // 'whuffie:whuffie-stellar',
+
     'accounts-base',
     'meteorhacks:npm',
     'aldeed:collection2@2.3.3',
+    'jparker:crypto-aes',
+    'matb33:collection-hooks'
   ], ['client', 'server']);
 
   Npm.depends({

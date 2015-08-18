@@ -9,9 +9,10 @@ Package.onUse(function (api) {
   api.versionsFrom(['METEOR@1.0']);
 
   api.use([
+    'whuffie:whuffie-users@0.0.1',
+
     'aldeed:collection2@2.3.3',
-    'dburles:collection-helpers@1.0.3',
-    'whuffie:whuffie-users@0.0.1'
+    'dburles:collection-helpers@1.0.3'
   ]);
 
   api.addFiles([

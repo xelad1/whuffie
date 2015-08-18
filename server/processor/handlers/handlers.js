@@ -25,9 +25,9 @@ messageHandler = {
     neoOperations.upsertEdge(sourceAddr, targetAddr, newLimit,
       function(err, res) {
         // //console.log('meta.AffectedNodes:', msg_json.meta.AffectedNodes);
-        Fiber(function() {
+        //Fiber(function() {
           mongoOperations.insertTxn(sourceAddr, targetAddr, newLimit, res, msg_json);
-        });
+        //});
     });
 
   }

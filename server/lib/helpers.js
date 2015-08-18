@@ -3,9 +3,14 @@
 var edgeMap = {};
 
 var maxFlowBetweenAccounts = function (sourceAddr, targetAddr) {
-  // sourceAddr: the hopeful sender's address
-  // targetAddr: the potential recipient's address
-  
+  // sourceAddr: senderAddr, the hopeful sender's address
+  // targetAddr: targetAddr, the potential recipient's address
+
+  /*
+  TODO: for new trustLine schema
+  get ALL (no arrow) limits within 3 degrees
+  limit.targetBalance is what will have to be decreased on each iteration
+   */
   var query = 'MATCH (:User {address:{targetAddr}})' + 
     '-[limit:TRUST*..3]->(:User {address:{sourceAddr}}) ' + 
     'WHERE limit.amount > 0 RETURN limit';
