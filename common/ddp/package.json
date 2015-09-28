@@ -1,0 +1,14 @@
+{
+  "name": "ddp",
+  "version": "0.1.2",
+  "description": "Promise-based interface for hharnisc's ddp-client (no document or 3rd-party Websocket libs required)",
+  "main": "ddp.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ddp-client": "^0.1.2"
+  }
+}

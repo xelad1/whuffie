@@ -1,24 +1,10 @@
-# Node Files #
-##############
-.gulp/node_modules
-
-# Project Files #
-#################
-packages/npm-container/.npm/
-packages/sunnyg:meteor-famous-ui-components
-settings.json
-
-# Gulp-built files #
-####################
-lib/deps.js
-
-# test neo4j data #
-###################
-testGraph.json
-
 # etc #
 #######
 NOTES.md
+
+# ENV Files #
+#############
+settings.json
 
 # OS generated files #
 ######################

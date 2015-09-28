@@ -1,0 +1,44 @@
+# Meteor packages used by this project, one per line.
+# Check this file (and the other files in this directory) into your repository.
+#
+# 'meteor add' and 'meteor remove' will edit this file for you,
+# but you can also edit it by hand.
+
+# for if/when we start building a web app for iOS
+# meteor add cordova:com.meteor.cordova-update@https://github.com/practicalmeteor/com.meteor.cordova-update/tarball/a7e98f27a26b727288da81dcfd8047eccb5f6036
+# meteor add practicalmeteor:wkwebview
+
+autopublish
+insecure
+materialize:materialize
+less
+iron:router
+accounts-password
+meteorhacks:npm
+cosmos:browserify
+nooitaf:colors
+okgrow:promise
+
+# whuffie:whuffie-core 		# requires users, identity, etc
+whuffie:whuffie-users
+whuffie:whuffie-identity
+# sunnyg:meteor-stellar
+
+
+
+
+npm-container
+standard-minifiers
+meteor-base
+mobile-experience
+mongo
+blaze-html-templates
+session
+jquery
+tracker
+logging
+reload
+random
+ejson
+spacebars
+check
