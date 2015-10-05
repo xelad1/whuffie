@@ -1,33 +1,31 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- */
 'use strict';
 
 var React = require('react-native');
+//var ReactMotion = require('react-motion/native');
+
 var {
   AppRegistry,
   StyleSheet,
   Text,
   View,
+  LinkingIOS,
+  TouchableOpacity
 } = React;
 
-var DDP = require('ddp');
-var ddp = new DDP({
-  host: 'localhost',
-  port: 8000,
-  ssl: false,
-  autoReconnect: true,
-  autoReconnectTimer : 500,
-  maintainCollections : true,
-  ddpVersion : '1'
-});
+//var {
+//  Motion,
+//  spring
+//} = ReactMotion;
+
+var ddp = require('./app/config/ddp');
+var WhuffieIdentity = require('./app/components/identity');
+//var ShaderDemo = require('./app/components/glDemo');
 
 var whuffie = React.createClass({
   componentDidMount: function() {
     ddp.initialize()
-      .then(function(data) {
-        console.log('initialized ddp connection', data);
+      .then(function(success) {
+        console.log('success initializing ddp connection', success);
       })
       .catch(function(err) {
         console.log('error initializing ddp connection', err);
@@ -44,6 +42,9 @@ var whuffie = React.createClass({
           Press Cmd+R to reload,{'\n'}
           Cmd+D or shake for dev menu
         </Text>
+
+        {/* <ShaderDemo width={100} height={100} shader={'color'}/> */}
+        <WhuffieIdentity />
       </View>
     );
   }
@@ -54,18 +55,18 @@ var styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#F5FCFF'
   },
   welcome: {
     fontSize: 20,
     textAlign: 'center',
-    margin: 10,
+    margin: 10
   },
   instructions: {
     textAlign: 'center',
     color: '#333333',
-    marginBottom: 5,
-  },
+    marginBottom: 5
+  }
 });
 
 AppRegistry.registerComponent('whuffie', () => whuffie);

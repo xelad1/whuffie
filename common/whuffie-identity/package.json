@@ -1,0 +1,15 @@
+{
+  "name": "whuffie-identity",
+  "version": "0.0.1",
+  "description": "Generates third-party credentials, associated linked-data, and stores it in IPFS [built for React-Native]",
+  "main": "github/client.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "react-native": "^0.11.2",
+    "shitty-qs": "^1.0.1"
+  }
+}
