@@ -73,6 +73,26 @@ var submitGenericTransaction = function(currencyCode, txnType, amt, rcvrAddr, op
   });
 };
 
+var iterativeDeepeningDepthFirstSearch = function (node, finalDepth) {
+  
+  for (var maxDepth = 1; maxDepth < 6; maxDepth++) {
+    depthFirstSearch(node, maxDepth);
+  }
+}
+
+var depthFirstSearch = function (node, maxDepth) {
+
+  var childrenLength = node.children.length;
+  
+  if (maxDepth <= 0) {
+    return
+  };
+
+  for (var i = 0; i < childrenLength; i++) {
+    depthFirstSearch(node.children[i], maxDepth - 1);
+  }
+}
+
 submitSTRTransaction = submitGenericTransaction.bind(null, 'STR', 'payment');
 
 submitWFITransaction = submitGenericTransaction.bind(null, 'WFI', 'payment');
